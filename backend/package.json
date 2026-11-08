@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend Totvs RH Inteligente",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "seed": "node scripts/setPasswords.js",
+    "test:login": "node scripts/testLogin.js",
+    "test:chat": "node scripts/testChat.js",
+    "test:onboarding": "node scripts/testOnboarding.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mssql": "^12.7.14",
+    "multer": "^1.4.5-lts.1",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.4",
+    "pdfjs-dist": "^4.9.155",
+    "pdfkit": "^0.17.2"
+  }
+}
