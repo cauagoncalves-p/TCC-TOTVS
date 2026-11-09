@@ -6,7 +6,10 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Rota de verificação de status
@@ -19,11 +22,17 @@ const authRoutes = require('./routes/auth');
 const meRoutes = require('./routes/me');
 const chatRoutes = require('./routes/chat');
 const onboardingRoutes = require('./routes/onboarding');
+const analyticsRoutes = require('./routes/analytics');
+const alertRoutes = require('./routes/alerts');
+const complianceRoutes = require('./routes/compliance');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', meRoutes);
 app.use('/api', chatRoutes);
 app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/alerts', alertRoutes);
+app.use('/api/compliance', complianceRoutes);
 
 // Tratamento de rotas inexistentes (404)
 app.use((req, res) => {

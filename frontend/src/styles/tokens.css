@@ -1,0 +1,19 @@
+:root {
+  --color-totvs-navy: #0B192C;
+  --color-totvs-navy-light: #1E3E62;
+  --color-totvs-primary: #0066FF;
+  --color-totvs-accent: #00D2D3;
+  --color-totvs-surface: #F8FAFC;
+  --color-totvs-border: #E2E8F0;
+
+  /* Risco / Severidade */
+  --color-risk-high: #EF4444;
+  --color-risk-high-bg: #FEE2E2;
+  --color-risk-moderate: #F59E0B;
+  --color-risk-moderate-bg: #FEF3C7;
+  --color-risk-low: #10B981;
+  --color-risk-low-bg: #D1FAE5;
+
+  /* Tipografia */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}

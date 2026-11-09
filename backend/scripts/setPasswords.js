@@ -6,7 +6,8 @@ const { poolPromise } = require('../src/config/db');
 const USERS = [
   { name: 'Ana Souza', email: 'ana.souza@exemplo.com', role: 'colaborador' },
   { name: 'Bruno Lima', email: 'bruno.lima@exemplo.com', role: 'colaborador' },
-  { name: 'Roberta RH', email: 'roberta.rh@exemplo.com', role: 'rh' }
+  { name: 'Roberta RH', email: 'roberta.rh@exemplo.com', role: 'rh' },
+  { name: 'Carlos Gestor', email: 'carlos.gestor@exemplo.com', role: 'gestor' }
 ];
 
 (async () => {

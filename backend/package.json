@@ -6,9 +6,15 @@
   "scripts": {
     "start": "node src/index.js",
     "seed": "node scripts/setPasswords.js",
+    "migrate:analytics": "node scripts/migrate_003_analytics.js",
+    "seed:analytics": "node scripts/seedAnalytics.js",
+    "migrate:compliance": "node scripts/migrate_004_compliance.js",
+    "seed:compliance": "node scripts/seedCompliance.js",
     "test:login": "node scripts/testLogin.js",
     "test:chat": "node scripts/testChat.js",
-    "test:onboarding": "node scripts/testOnboarding.js"
+    "test:onboarding": "node scripts/testOnboarding.js",
+    "test:analytics": "node scripts/testAnalytics.js",
+    "test:compliance": "node scripts/testCompliance.js"
   },
   "keywords": [],
   "author": "",

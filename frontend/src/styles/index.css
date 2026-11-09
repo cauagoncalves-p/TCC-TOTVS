@@ -1,0 +1,11 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-totvs-surface);
+  color: #0f172a;
+}
