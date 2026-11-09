@@ -15,11 +15,11 @@ async function getByUserId(userId) {
 }
 
 /**
- * Efetua a criação transacional de Usuário, Colaborador, Saldo de Férias e aprovação do Caso
- * @param {Object} params { caseId, reviewerUserId, candidateData, tempPasswordHash }
+ * Efetua a criação transacional de Usuário, Colaborador, Perfil Profissional, Saldo de Férias e aprovação do Caso
+ * @param {Object} params { caseId, reviewerUserId, candidateData, profileData, tempPasswordHash }
  * @returns {Promise<{userId: number, employeeId: number, registration: string}>}
  */
-async function createFromOnboarding({ caseId, reviewerUserId, candidateData, tempPasswordHash }) {
+async function createFromOnboarding({ caseId, reviewerUserId, candidateData, profileData, tempPasswordHash }) {
   const pool = await poolPromise;
   const transaction = new sql.Transaction(pool);
 
@@ -102,7 +102,20 @@ async function createFromOnboarding({ caseId, reviewerUserId, candidateData, tem
         VALUES (@empId, @start, @end, 30, 0)
       `);
 
-    // 5. Atualiza o caso OnboardingCases
+    // 5. Se houver Perfil Profissional (vindo do currículo), grava em dbo.EmployeeProfiles
+    if (profileData && typeof profileData === 'object' && Object.keys(profileData).length > 0) {
+      const profileReq = new sql.Request(transaction);
+      await profileReq
+        .input('empId', newEmployeeId)
+        .input('profileJson', JSON.stringify(profileData))
+        .input('caseId', caseId)
+        .query(`
+          INSERT INTO dbo.EmployeeProfiles (EmployeeId, ProfileJson, SourceCaseId, UpdatedAt)
+          VALUES (@empId, @profileJson, @caseId, SYSUTCDATETIME())
+        `);
+    }
+
+    // 6. Atualiza o caso OnboardingCases
     const caseReq = new sql.Request(transaction);
     await caseReq
       .input('caseId', caseId)

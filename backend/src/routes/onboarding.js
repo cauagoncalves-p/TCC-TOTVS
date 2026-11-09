@@ -39,11 +39,26 @@ const handleUpload = (req, res, next) => {
 router.use(authMiddleware);
 router.use(requireRole('rh'));
 
+// GET /api/onboarding/document-types (deve vir antes de /:id)
+router.get('/document-types', onboardingController.listDocumentTypes);
+
+// POST /api/onboarding/validate (validação sem gravar - deve vir antes de /:id)
+router.post('/validate', onboardingController.validate);
+
 // POST /api/onboarding/upload
 router.post('/upload', handleUpload, onboardingController.upload);
 
 // GET /api/onboarding?status=
 router.get('/', onboardingController.list);
+
+// POST /api/onboarding (criação manual de caso)
+router.post('/', onboardingController.createManual);
+
+// POST /api/onboarding/:id/documents (adiciona novo documento ao caso)
+router.post('/:id/documents', handleUpload, onboardingController.addDocument);
+
+// DELETE /api/onboarding/:id/documents/:docId (remove documento do caso)
+router.delete('/:id/documents/:docId', onboardingController.removeDocument);
 
 // GET /api/onboarding/:id
 router.get('/:id', onboardingController.getById);

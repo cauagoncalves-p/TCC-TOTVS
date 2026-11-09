@@ -16,6 +16,7 @@ CREATE TABLE dbo.Departments (
 );
 GO
 
+
 /* ---------- Métricas mensais por departamento ----------
    Colunas calculadas guardam as fórmulas oficiais dos indicadores. */
 IF OBJECT_ID('dbo.DepartmentMonthlyMetrics') IS NULL
@@ -39,7 +40,6 @@ CREATE TABLE dbo.DepartmentMonthlyMetrics (
     CONSTRAINT UQ_Metrics_DeptMonth UNIQUE (DepartmentId, MonthRef)
 );
 GO
-
 /* ---------- Alertas ---------- */
 IF OBJECT_ID('dbo.Alerts') IS NULL
 CREATE TABLE dbo.Alerts (

@@ -72,22 +72,35 @@ function calculateAge(birthDateStr) {
 }
 
 /**
- * Valida todos os campos extraídos ou revisados do candidato
- * @param {Object} data - Objeto de dados
+ * Valida todos os campos cadastrais extraídos ou revisados do candidato
+ * Atribui 'nature' em cada ocorrência:
+ * - 'pendente': campo obrigatório ausente
+ * - 'erro': valor inválido, fora da regra ou duplicado
+ * - 'aviso': inconsistência advisory (ex: evidência não encontrada, conflito)
+ *
+ * @param {Object} data - Objeto de dados cadastrais
  * @param {Object} [options]
  * @param {boolean} [options.checkDatabase=true] - Se deve checar unicidade no banco
- * @returns {Promise<Array<{field: string, code: string, message: string}>>}
+ * @returns {Promise<Array<{field: string, code: string, nature: string, message: string}>>}
  */
 async function validateCandidateData(data, { checkDatabase = true } = {}) {
   const issues = [];
   const candidate = data || {};
 
   // 1. fullName (obrigatório)
-  if (!candidate.fullName || typeof candidate.fullName !== 'string' || candidate.fullName.trim().length < 3) {
+  if (!candidate.fullName || typeof candidate.fullName !== 'string' || candidate.fullName.trim().length === 0) {
     issues.push({
       field: 'fullName',
       code: 'CAMPO_OBRIGATORIO',
-      message: 'Nome completo é obrigatório e deve ter no mínimo 3 caracteres.'
+      nature: 'pendente',
+      message: 'Nome completo é obrigatório.'
+    });
+  } else if (candidate.fullName.trim().length < 3) {
+    issues.push({
+      field: 'fullName',
+      code: 'CAMPO_INVALIDO',
+      nature: 'erro',
+      message: 'Nome completo deve ter no mínimo 3 caracteres.'
     });
   }
 
@@ -97,12 +110,14 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
     issues.push({
       field: 'cpf',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'CPF é obrigatório.'
     });
   } else if (!isValidCpfDigits(rawCpf)) {
     issues.push({
       field: 'cpf',
       code: 'CPF_INVALIDO',
+      nature: 'erro',
       message: 'CPF inválido (dígitos verificadores incorretos ou tamanho inválido).'
     });
   } else if (checkDatabase) {
@@ -115,6 +130,7 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
         issues.push({
           field: 'cpf',
           code: 'CPF_DUPLICADO',
+          nature: 'erro',
           message: 'Já existe um colaborador cadastrado com este CPF.'
         });
       }
@@ -128,12 +144,14 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
     issues.push({
       field: 'birthDate',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'Data de nascimento é obrigatória.'
     });
   } else if (!isValidIsoDate(candidate.birthDate)) {
     issues.push({
       field: 'birthDate',
       code: 'DATA_INVALIDA',
+      nature: 'erro',
       message: 'Data de nascimento deve estar no formato AAAA-MM-DD.'
     });
   } else {
@@ -142,6 +160,7 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
       issues.push({
         field: 'birthDate',
         code: 'IDADE_MINIMA',
+        nature: 'erro',
         message: `Idade mínima para admissão é de 14 anos (idade calculada: ${age} anos).`
       });
     }
@@ -152,12 +171,14 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
     issues.push({
       field: 'email',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'E-mail é obrigatório.'
     });
   } else if (!isValidEmail(candidate.email)) {
     issues.push({
       field: 'email',
       code: 'EMAIL_INVALIDO',
+      nature: 'erro',
       message: 'Formato de e-mail inválido.'
     });
   } else if (checkDatabase) {
@@ -170,6 +191,7 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
         issues.push({
           field: 'email',
           code: 'EMAIL_DUPLICADO',
+          nature: 'erro',
           message: 'Este e-mail já está cadastrado para outro usuário.'
         });
       }
@@ -178,35 +200,59 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
     }
   }
 
-  // 5. jobTitle (obrigatório)
+  // 5. phone (obrigatório)
+  if (!candidate.phone) {
+    issues.push({
+      field: 'phone',
+      code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
+      message: 'Telefone é obrigatório.'
+    });
+  } else {
+    const cleanPhone = String(candidate.phone).replace(/\D/g, '');
+    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      issues.push({
+        field: 'phone',
+        code: 'TELEFONE_INVALIDO',
+        nature: 'erro',
+        message: 'Telefone deve conter DDD + número (10 ou 11 dígitos).'
+      });
+    }
+  }
+
+  // 6. jobTitle (obrigatório)
   if (!candidate.jobTitle || typeof candidate.jobTitle !== 'string' || candidate.jobTitle.trim().length === 0) {
     issues.push({
       field: 'jobTitle',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'Cargo é obrigatório.'
     });
   }
 
-  // 6. department (obrigatório)
+  // 7. department (obrigatório)
   if (!candidate.department || typeof candidate.department !== 'string' || candidate.department.trim().length === 0) {
     issues.push({
       field: 'department',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'Departamento é obrigatório.'
     });
   }
 
-  // 7. hireDate (obrigatório, YYYY-MM-DD, faixa razoável)
+  // 8. hireDate (obrigatório, YYYY-MM-DD, faixa razoável)
   if (!candidate.hireDate) {
     issues.push({
       field: 'hireDate',
       code: 'CAMPO_OBRIGATORIO',
+      nature: 'pendente',
       message: 'Data de admissão é obrigatória.'
     });
   } else if (!isValidIsoDate(candidate.hireDate)) {
     issues.push({
       field: 'hireDate',
       code: 'DATA_INVALIDA',
+      nature: 'erro',
       message: 'Data de admissão deve estar no formato AAAA-MM-DD.'
     });
   } else {
@@ -221,42 +267,46 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
       issues.push({
         field: 'hireDate',
         code: 'DATA_ADMISSAO_INVALIDA',
+        nature: 'erro',
         message: 'Data de admissão não pode ser anterior a 10 anos nem posterior a 1 ano no futuro.'
       });
     }
   }
 
-  // 8. state / UF (opcional, mas se vier deve ser válida)
+  // 9. state / UF (opcional, mas se vier deve ser válida)
   if (candidate.state) {
     const uf = String(candidate.state).trim().toUpperCase();
     if (!VALID_UFS.includes(uf)) {
       issues.push({
         field: 'state',
         code: 'UF_INVALIDA',
+        nature: 'erro',
         message: `Estado/UF '${uf}' inválido. Deve ser uma sigla oficial de estado brasileiro.`
       });
     }
   }
 
-  // 9. zipCode (opcional, mas se vier deve ter 8 dígitos)
+  // 10. zipCode (opcional, mas se vier deve ter 8 dígitos)
   if (candidate.zipCode) {
     const cleanCep = String(candidate.zipCode).replace(/\D/g, '');
     if (cleanCep.length !== 8) {
       issues.push({
         field: 'zipCode',
         code: 'CEP_INVALIDO',
+        nature: 'erro',
         message: 'CEP deve conter exatamente 8 dígitos.'
       });
     }
   }
 
-  // 10. baseSalary (opcional, mas se vier deve ser numérico >= 0)
+  // 11. baseSalary (opcional, mas se vier deve ser numérico >= 0)
   if (candidate.baseSalary !== undefined && candidate.baseSalary !== null && candidate.baseSalary !== '') {
     const num = Number(candidate.baseSalary);
     if (isNaN(num) || num < 0) {
       issues.push({
         field: 'baseSalary',
         code: 'SALARIO_INVALIDO',
+        nature: 'erro',
         message: 'Salário base deve ser um valor numérico positivo.'
       });
     }
@@ -266,23 +316,30 @@ async function validateCandidateData(data, { checkDatabase = true } = {}) {
 }
 
 /**
- * Avalia se existem problemas impeditivos para a aprovação
- * @param {Array<{code: string}>} issues
+ * Avalia se existem problemas impeditivos para a aprovação (nature erro ou pendente)
+ * @param {Array<{code: string, nature?: string}>} issues
  * @returns {boolean}
  */
 function isApprovalBlocked(issues) {
   if (!issues || issues.length === 0) return false;
-  const blockingCodes = [
-    'CAMPO_OBRIGATORIO',
-    'CPF_INVALIDO',
-    'CPF_DUPLICADO',
-    'EMAIL_INVALIDO',
-    'EMAIL_DUPLICADO',
-    'DATA_INVALIDA',
-    'IDADE_MINIMA',
-    'DATA_ADMISSAO_INVALIDA'
-  ];
-  return issues.some(i => blockingCodes.includes(i.code));
+  return issues.some(i => {
+    if (i.nature === 'erro' || i.nature === 'pendente') return true;
+    if (i.nature === 'aviso') return false;
+    // Compatibilidade caso não tenha nature
+    const blockingCodes = [
+      'CAMPO_OBRIGATORIO',
+      'CPF_INVALIDO',
+      'CPF_DUPLICADO',
+      'EMAIL_INVALIDO',
+      'EMAIL_DUPLICADO',
+      'DATA_INVALIDA',
+      'IDADE_MINIMA',
+      'DATA_ADMISSAO_INVALIDA',
+      'TELEFONE_INVALIDO',
+      'CAMPO_INVALIDO'
+    ];
+    return blockingCodes.includes(i.code);
+  });
 }
 
 module.exports = {

@@ -210,3 +210,5 @@ CREATE TABLE dbo.KnowledgeChunks (
     CONSTRAINT UQ_KChunk UNIQUE (DocumentId, ChunkIndex)
 );
 GO
+
+select * from Users

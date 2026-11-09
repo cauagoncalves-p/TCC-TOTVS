@@ -40,14 +40,21 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Backend server rodando na porta ${PORT}`);
-  console.log(`Rotas ativas:`);
-  console.log(`- POST http://localhost:${PORT}/api/auth/login`);
-  console.log(`- GET  http://localhost:${PORT}/api/me`);
-  console.log(`- POST http://localhost:${PORT}/api/chat`);
-  console.log(`- GET  http://localhost:${PORT}/api/chat/sessions/:id/messages`);
-  console.log(`- POST http://localhost:${PORT}/api/onboarding/upload`);
-  console.log(`- GET  http://localhost:${PORT}/api/onboarding`);
-  console.log(`- GET  http://localhost:${PORT}/api/health`);
-});
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Backend server rodando na porta ${PORT}`);
+    console.log(`Rotas ativas:`);
+    console.log(`- POST http://localhost:${PORT}/api/auth/login`);
+    console.log(`- GET  http://localhost:${PORT}/api/me`);
+    console.log(`- POST http://localhost:${PORT}/api/chat`);
+    console.log(`- GET  http://localhost:${PORT}/api/chat/sessions/:id/messages`);
+    console.log(`- POST http://localhost:${PORT}/api/onboarding/upload`);
+    console.log(`- GET  http://localhost:${PORT}/api/onboarding`);
+    console.log(`- POST http://localhost:${PORT}/api/onboarding`);
+    console.log(`- POST http://localhost:${PORT}/api/onboarding/validate`);
+    console.log(`- GET  http://localhost:${PORT}/api/health`);
+  });
+}
+
+module.exports = app;
