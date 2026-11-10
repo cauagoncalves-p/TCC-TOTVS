@@ -9,6 +9,7 @@ export interface ChatMessageItem {
   content: string;
   toolUsed?: string | null;
   createdAt?: string;
+  isUnconfirmed?: boolean;
   sources?: Array<{
     title: string;
     version?: string;
@@ -153,17 +154,28 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                       </div>
                     )}
 
+                    {/* Unconfirmed highlight badge */}
+                    {msg.isUnconfirmed && (
+                      <div className="mt-2.5 p-2 bg-amber-500/15 border border-amber-500/30 rounded-lg flex items-center gap-2 text-xs text-amber-800 font-semibold">
+                        <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+                        <span>Não confirmada na base documental vigente</span>
+                      </div>
+                    )}
+
                     {/* Document Sources */}
                     {msg.sources && msg.sources.length > 0 && (
                       <div className="mt-3 pt-2.5 border-t border-border/60 space-y-1.5">
                         <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                          <FileText className="w-3.5 h-3.5" />
+                          <FileText className="w-3.5 h-3.5 text-blue-600" />
                           <span>Fontes citadas:</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {msg.sources.map((src, i) => (
-                            <Badge key={i} variant="neutral" className="text-[11px] font-normal bg-background/80">
-                              {src.title} {src.section ? `• ${src.section}` : ''}
+                            <Badge key={i} variant="neutral" className="text-[11px] font-normal bg-background/80 border border-slate-200">
+                              <span className="font-semibold text-slate-800">{src.title}</span>
+                              {src.version && <span className="text-slate-500 ml-1">({src.version})</span>}
+                              {src.section && <span className="text-slate-600 ml-1">• {src.section}</span>}
+                              {src.publishedAt && <span className="text-slate-400 ml-1">• Publicado em: {src.publishedAt}</span>}
                             </Badge>
                           ))}
                         </div>

@@ -12,6 +12,10 @@ import { ChatPage } from '../pages/chat/ChatPage';
 import { ProfilePage } from '../pages/profile/ProfilePage';
 import { OnboardingPage } from '../pages/onboarding/OnboardingPage';
 import { OnboardingReviewPage } from '../pages/onboarding/OnboardingReviewPage';
+import { AnalyticsPage } from '../pages/analytics/AnalyticsPage';
+import { CompliancePage } from '../pages/compliance/CompliancePage';
+import { KnowledgePage } from '../pages/knowledge/KnowledgePage';
+import { LaborAssistantPage } from '../pages/assistant/LaborAssistantPage';
 
 export const router = createBrowserRouter([
   {
@@ -75,11 +79,7 @@ export const router = createBrowserRouter([
         path: 'analytics',
         element: (
           <RequireRole allowedRoles={['rh', 'gestor']}>
-            <ModulePlaceholder
-              title="Inteligência Preditiva"
-              phase="Fase F3"
-              description="Painel gerencial de absenteísmo, horas extras, turnover e alertas"
-            />
+            <AnalyticsPage />
           </RequireRole>
         )
       },
@@ -89,25 +89,17 @@ export const router = createBrowserRouter([
         path: 'compliance',
         element: (
           <RequireRole allowedRoles={['rh', 'gestor']}>
-            <ModulePlaceholder
-              title="TOTVS Compliance Inteligente"
-              phase="Fase F4"
-              description="Auditoria preventiva, regras trabalhistas e validação pré-envio eSocial"
-            />
+            <CompliancePage />
           </RequireRole>
         )
       },
 
-      // Rotas de Conhecimento e Assistente Trabalhista (RH)
+      // Rotas de Conhecimento e Assistente Trabalhista (RH) - Fase F4c
       {
         path: 'knowledge',
         element: (
           <RequireRole allowedRoles={['rh']}>
-            <ModulePlaceholder
-              title="Base de Conhecimento"
-              phase="Fase F4c"
-              description="Gerenciamento e indexação de documentos trabalhistas e manuais oficiais"
-            />
+            <KnowledgePage />
           </RequireRole>
         )
       },
@@ -115,11 +107,7 @@ export const router = createBrowserRouter([
         path: 'assistant',
         element: (
           <RequireRole allowedRoles={['rh']}>
-            <ModulePlaceholder
-              title="Assistente Trabalhista (RAG)"
-              phase="Fase F4c"
-              description="Consultas especializadas com citação estrita de fontes documentais oficiais"
-            />
+            <LaborAssistantPage />
           </RequireRole>
         )
       }

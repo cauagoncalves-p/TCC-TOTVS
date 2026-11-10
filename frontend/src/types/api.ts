@@ -234,3 +234,66 @@ export interface EsocialEvent {
   ConfirmedBy?: number | null;
   ConfirmedAt?: string | null;
 }
+
+export interface ComplianceRun {
+  Id: number;
+  Scope: 'cadastros' | 'esocial' | string;
+  EventCode?: string | null;
+  StartedBy: number;
+  StartedByName?: string;
+  StartedAt: string;
+  FinishedAt?: string | null;
+  RecordsAnalyzed?: number;
+  IssuesNew?: number;
+  IssuesOpen?: number;
+}
+
+export interface ComplianceAuditLogItem {
+  Id: number;
+  UserId?: number | null;
+  UserName?: string | null;
+  UserRole?: string | null;
+  Action: string;
+  EntityType?: string | null;
+  EntityId?: string | null;
+  DetailsJson?: string | null;
+  details?: Record<string, any>;
+  CreatedAt: string;
+}
+
+export interface ObligationItem {
+  id: string;
+  title: string;
+  code: string;
+  dueDate: string;
+  status: 'em_dia' | 'proximo' | 'pendente' | 'atrasado' | 'concluida';
+  responsible: string;
+  category: 'trabalhista' | 'previdenciaria' | 'fiscal';
+}
+
+export interface KnowledgeDocument {
+  id: string;
+  title: string;
+  type: 'clt' | 'manual_esocial' | 'acordo_coletivo' | 'politica_interna';
+  version: string;
+  publishDate: string;
+  validity: string;
+  isCurrent: boolean;
+  fileSize?: string;
+}
+
+export interface AssistantSourceCitation {
+  documentTitle: string;
+  version: string;
+  section: string;
+  publishDate: string;
+}
+
+export interface AssistantMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  sources?: AssistantSourceCitation[];
+  isUnconfirmed?: boolean;
+  timestamp: string;
+}
