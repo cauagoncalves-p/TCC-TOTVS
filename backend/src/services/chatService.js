@@ -4,6 +4,7 @@ const geminiClient = require('../ai/geminiClient');
 const employeeService = require('./employeeService');
 const vacationService = require('./vacationService');
 const payslipService = require('./payslipService');
+const knowledgeRetrievalService = require('./knowledgeRetrievalService');
 
 /**
  * Processa a mensagem do colaborador, invocando o Gemini e ferramentas quando necessário.
@@ -53,8 +54,16 @@ async function handleMessage({ userId, sessionId, message }) {
     }
   };
 
-  // Chama o Gemini com loop de function calling
-  const { reply, toolUsed } = await geminiClient.generateReply(history, message, toolHandlers, 3);
+  // Busca trechos de políticas e normas vigentes com escopo restrito a colaboradores
+  let dynamicChunks = [];
+  try {
+    dynamicChunks = await knowledgeRetrievalService.searchChunks(message, 'colaborador', { topK: 3, minScore: 2.0 });
+  } catch (err) {
+    console.warn('[Chat] Erro ao consultar base de conhecimento para colaborador:', err.message);
+  }
+
+  // Chama o Gemini com loop de function calling e contexto de RAG
+  const { reply, toolUsed } = await geminiClient.generateReply(history, message, toolHandlers, 3, dynamicChunks);
 
   // Persiste a resposta do modelo e registra as ferramentas acionadas
   await chatRepository.saveMessage({

@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { TimeseriesPoint } from '../../../types/api';
 import { formatCompetence } from '../../../lib/formatters';
+import { chartColors } from '../../../styles/chartColors';
 
 interface IndicatorsTimeseriesChartProps {
   data: TimeseriesPoint[];
@@ -59,37 +60,42 @@ export const IndicatorsTimeseriesChart: React.FC<IndicatorsTimeseriesChartProps>
   return (
     <ResponsiveContainer width="100%" height={280}>
       <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+        <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} />
         <XAxis dataKey="month" tick={{ fontSize: 11 }} />
         <YAxis tick={{ fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8 }}
+          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }}
           formatter={(value: any, name: any) => [`${value}`, name]}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
+        {/* Linha com traço contínuo e marcador circular */}
         <Line
           type="monotone"
           dataKey="Absenteísmo"
-          stroke="#3b82f6"
+          stroke={chartColors.brandPrimary}
           strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 5 }}
+          dot={{ r: 3 }}
+          activeDot={{ r: 6 }}
         />
+        {/* Linha tracejada com marcador quadrado */}
         <Line
           type="monotone"
           dataKey="H.Extra/Colab."
-          stroke="#f59e0b"
+          stroke={chartColors.amberChart}
           strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 5 }}
+          strokeDasharray="4 2"
+          dot={{ r: 3 }}
+          activeDot={{ r: 6 }}
         />
+        {/* Linha pontilhada com marcador em losango */}
         <Line
           type="monotone"
           dataKey="Turnover"
-          stroke="#ef4444"
+          stroke={chartColors.redChart}
           strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 5 }}
+          strokeDasharray="2 2"
+          dot={{ r: 3 }}
+          activeDot={{ r: 6 }}
         />
       </LineChart>
     </ResponsiveContainer>

@@ -44,9 +44,10 @@ async function listRuns({ limit = 50 } = {}) {
       SELECT TOP (@limit)
         r.Id, r.Scope, r.EventCode, r.StartedBy, r.StartedAt, r.FinishedAt,
         r.RecordsAnalyzed, r.IssuesNew, r.IssuesOpen,
-        u.name AS StartedByName
+        COALESCE(e.FullName, u.Email) AS StartedByName
       FROM dbo.ComplianceRuns r
-      LEFT JOIN dbo.[${userTable}] u ON u.id = r.StartedBy
+      LEFT JOIN dbo.[${userTable}] u ON u.Id = r.StartedBy
+      LEFT JOIN dbo.Employees e ON e.UserId = u.Id
       ORDER BY r.StartedAt DESC
     `);
   return result.recordset;

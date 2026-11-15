@@ -6,6 +6,19 @@
 
 body {
   font-family: var(--font-family);
-  background-color: var(--color-totvs-surface);
-  color: #0f172a;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+}
+
+/* Ajustes de acessibilidade, z-index e posicionamento seguro para o widget do VLibras */
+div[vw] {
+  z-index: 40 !important;
+}
+
+div[vw] [vw-access-button] {
+  z-index: 40 !important;
+}
+
+div[vw] [vw-plugin-wrapper] {
+  z-index: 40 !important;
 }

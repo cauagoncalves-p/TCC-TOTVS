@@ -18,7 +18,7 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor de resposta: 401 limpa sessão e redireciona ao login
+// Interceptor de resposta: 401 limpa sessão; 403 PASSWORD_CHANGE_REQUIRED redireciona para troca obrigatória
 http.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -27,6 +27,14 @@ http.interceptors.response.use(
       sessionStorage.removeItem('totvs_user');
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
+      }
+    } else if (
+      error.response &&
+      error.response.status === 403 &&
+      error.response.data?.code === 'PASSWORD_CHANGE_REQUIRED'
+    ) {
+      if (window.location.pathname !== '/force-change-password') {
+        window.location.href = '/force-change-password';
       }
     }
     return Promise.reject(error);

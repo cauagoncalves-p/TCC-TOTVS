@@ -15,6 +15,32 @@ async function getByUserId(userId) {
 }
 
 /**
+ * Busca o colaborador pelo Id
+ * @param {number} id
+ * @returns {Promise<Object|undefined>}
+ */
+async function getById(id) {
+  const pool = await poolPromise;
+  const result = await pool.request()
+    .input('id', id)
+    .query('SELECT Id, UserId, FullName, Registration, JobTitle, Department, HireDate, Status FROM Employees WHERE Id = @id');
+  return result.recordset[0];
+}
+
+/**
+ * Atualiza o UserId associado ao colaborador
+ * @param {number} employeeId
+ * @param {number} userId
+ */
+async function updateUserId(employeeId, userId) {
+  const pool = await poolPromise;
+  await pool.request()
+    .input('id', employeeId)
+    .input('userId', userId)
+    .query('UPDATE Employees SET UserId = @userId WHERE Id = @id');
+}
+
+/**
  * Efetua a criação transacional de Usuário, Colaborador, Perfil Profissional, Saldo de Férias e aprovação do Caso
  * @param {Object} params { caseId, reviewerUserId, candidateData, profileData, tempPasswordHash }
  * @returns {Promise<{userId: number, employeeId: number, registration: string}>}
@@ -32,19 +58,18 @@ async function createFromOnboarding({ caseId, reviewerUserId, candidateData, pro
     const seqNum = seqRes.recordset[0].NextSeq;
     const registration = 'M' + String(seqNum).padStart(4, '0');
 
-    // 2. Insere usuário em dbo.users
+    // 2. Insere usuário em dbo.Users
     const userReq = new sql.Request(transaction);
     const userRes = await userReq
-      .input('name', candidateData.fullName)
       .input('email', candidateData.email.trim().toLowerCase())
       .input('pwd', tempPasswordHash)
       .input('role', 'colaborador')
       .query(`
-        INSERT INTO dbo.users (name, email, password_hash, role, created_at)
-        OUTPUT INSERTED.id
-        VALUES (@name, @email, @pwd, @role, GETDATE())
+        INSERT INTO dbo.Users (Email, PasswordHash, Role, CreatedAt, IsActive, MustChangePassword)
+        OUTPUT INSERTED.Id
+        VALUES (@email, @pwd, @role, SYSUTCDATETIME(), 1, 1)
       `);
-    const newUserId = userRes.recordset[0].id;
+    const newUserId = userRes.recordset[0].Id;
 
     // 3. Insere o colaborador em dbo.Employees
     const rawCpf = candidateData.cpf ? String(candidateData.cpf).replace(/\D/g, '') : null;
@@ -145,5 +170,7 @@ async function createFromOnboarding({ caseId, reviewerUserId, candidateData, pro
 
 module.exports = {
   getByUserId,
+  getById,
+  updateUserId,
   createFromOnboarding
 };

@@ -10,6 +10,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { DepartmentComparison } from '../api';
+import { chartColors } from '../../../styles/chartColors';
 
 interface DepartmentComparisonChartProps {
   data: DepartmentComparison[];
@@ -35,20 +36,20 @@ export const DepartmentComparisonChart: React.FC<DepartmentComparisonChartProps>
   return (
     <ResponsiveContainer width="100%" height={280}>
       <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+        <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} />
         <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-20} textAnchor="end" />
         <YAxis tick={{ fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8 }}
+          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }}
           labelFormatter={(label, payload) => {
             const item = payload?.[0]?.payload;
             return item?.fullName ?? label;
           }}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="Absenteísmo" fill="#3b82f6" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="H.Extra/Colab." fill="#f59e0b" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="Turnover" fill="#ef4444" radius={[3, 3, 0, 0]} />
+        <Bar dataKey="Absenteísmo" fill={chartColors.brandPrimary} radius={[3, 3, 0, 0]} />
+        <Bar dataKey="H.Extra/Colab." fill={chartColors.amberChart} radius={[3, 3, 0, 0]} />
+        <Bar dataKey="Turnover" fill={chartColors.redChart} radius={[3, 3, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

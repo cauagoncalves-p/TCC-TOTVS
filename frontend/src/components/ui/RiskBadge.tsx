@@ -13,7 +13,7 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, className }) => {
   if (normalized === 'alto') {
     return (
       <Badge variant="danger" className={className}>
-        <AlertTriangle className="w-3 h-3 text-red-600" />
+        <AlertTriangle className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
         <span>Risco Alto</span>
       </Badge>
     );
@@ -22,7 +22,7 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, className }) => {
   if (normalized === 'moderado') {
     return (
       <Badge variant="warning" className={className}>
-        <AlertCircle className="w-3 h-3 text-amber-600" />
+        <AlertCircle className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
         <span>Risco Moderado</span>
       </Badge>
     );
@@ -30,7 +30,7 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, className }) => {
 
   return (
     <Badge variant="success" className={className}>
-      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+      <CheckCircle2 className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
       <span>Risco Baixo</span>
     </Badge>
   );

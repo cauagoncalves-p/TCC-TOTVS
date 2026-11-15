@@ -25,6 +25,8 @@ const onboardingRoutes = require('./routes/onboarding');
 const analyticsRoutes = require('./routes/analytics');
 const alertRoutes = require('./routes/alerts');
 const complianceRoutes = require('./routes/compliance');
+const adminUserRoutes = require('./routes/adminUsers');
+const knowledgeRoutes = require('./routes/knowledge');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', meRoutes);
@@ -33,6 +35,8 @@ app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/compliance', complianceRoutes);
+app.use('/api/admin/users', adminUserRoutes);
+app.use('/api/knowledge', knowledgeRoutes);
 
 // Tratamento de rotas inexistentes (404)
 app.use((req, res) => {

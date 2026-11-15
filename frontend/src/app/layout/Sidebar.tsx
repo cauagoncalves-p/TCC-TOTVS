@@ -8,7 +8,8 @@ import {
   ShieldCheck,
   BookOpen,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { UserRole } from '../../types/auth';
@@ -61,14 +62,20 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Base de Conhecimento',
     to: '/knowledge',
     icon: <BookOpen className="w-4 h-4" />,
-    roles: ['rh']
+    roles: ['rh', 'gestor']
   },
   {
     label: 'Assistente Trabalhista',
     to: '/assistant',
     icon: <HelpCircle className="w-4 h-4" />,
-    roles: ['rh'],
+    roles: ['rh', 'gestor'],
     badge: 'RAG'
+  },
+  {
+    label: 'Usuários e Acessos',
+    to: '/admin/users',
+    icon: <Users className="w-4 h-4" />,
+    roles: ['rh']
   }
 ];
 
@@ -79,23 +86,23 @@ export const Sidebar: React.FC = () => {
   const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(currentRole));
 
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col shrink-0 min-h-screen border-r border-slate-800">
+    <aside className="w-64 bg-brand-950 text-text-on-brand flex flex-col shrink-0 min-h-screen border-r border-brand-700/50">
       {/* Brand Header */}
-      <div className="h-16 flex items-center gap-3 px-5 border-b border-slate-800">
-        <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+      <div className="h-16 flex items-center gap-3 px-5 border-b border-brand-700/60 bg-brand-950">
+        <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-xs">
           <Sparkles className="w-5 h-5 text-white" />
         </div>
         <div>
           <span className="text-sm font-bold tracking-tight block text-white">TOTVS RH</span>
-          <span className="text-[10px] font-medium text-blue-400 block -mt-0.5 uppercase tracking-wider">
+          <span className="text-[10px] font-medium text-brand-300 block -mt-0.5 uppercase tracking-wider">
             Inteligente
           </span>
         </div>
       </div>
 
       {/* Role Indicator Banner */}
-      <div className="px-4 py-3 mx-3 my-3 bg-slate-800/80 rounded-xl border border-slate-700/50">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 block mb-0.5">
+      <div className="px-4 py-3 mx-3 my-3 bg-brand-900/60 rounded-xl border border-brand-700/60">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-300 block mb-0.5">
           Perfil de Acesso
         </span>
         <div className="flex items-center justify-between">
@@ -106,7 +113,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Navigation Links */}
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
+        <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider px-3 py-2">
           Módulos
         </div>
 
@@ -118,8 +125,8 @@ export const Sidebar: React.FC = () => {
               cn(
                 'flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all group',
                 isActive
-                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-semibold'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-brand-700 text-white font-semibold shadow-xs border-l-4 border-brand-500'
+                  : 'text-slate-300 hover:bg-brand-700/50 hover:text-white'
               )
             }
           >
@@ -129,7 +136,7 @@ export const Sidebar: React.FC = () => {
             </div>
 
             {item.badge && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-500/30 text-brand-300 border border-brand-500/40">
                 {item.badge}
               </span>
             )}
@@ -138,9 +145,9 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-slate-800 text-[11px] text-slate-500">
+      <div className="p-4 border-t border-brand-700/60 text-[11px] text-slate-400">
         TOTVS RH Inteligente v1.0
-        <span className="block text-[10px] text-slate-600 mt-0.5">TCC Case TOTVS</span>
+        <span className="block text-[10px] text-slate-400 mt-0.5">TCC Case TOTVS</span>
       </div>
     </aside>
   );

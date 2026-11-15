@@ -4,9 +4,13 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const requireRole = require('../middlewares/roleMiddleware');
 const complianceController = require('../controllers/complianceController');
+const knowledgeController = require('../controllers/knowledgeController');
 
 // Todas as rotas de compliance exigem autenticação
 router.use(authMiddleware);
+
+// Assistente Trabalhista (KAb / Base de Conhecimento)
+router.post('/assistant/chat', requireRole(['rh', 'gestor']), knowledgeController.assistantChat);
 
 // Rotas de leitura: permitidas para 'rh' e 'gestor'
 router.get('/rules', requireRole(['rh', 'gestor']), complianceController.listRules);

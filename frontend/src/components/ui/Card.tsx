@@ -12,9 +12,9 @@ export const Card: React.FC<CardProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    default: 'bg-white border border-slate-200/80 shadow-sm rounded-xl',
-    flat: 'bg-slate-50 border border-slate-100 rounded-xl',
-    outline: 'bg-transparent border border-slate-200 rounded-xl'
+    default: 'bg-app-surface border border-app-border shadow-xs rounded-xl',
+    flat: 'bg-app-bg border border-app-border/60 rounded-xl',
+    outline: 'bg-transparent border border-app-border rounded-xl'
   };
 
   return (
@@ -39,7 +39,7 @@ export const CardTitle: React.FC<HTMLAttributes<HTMLHeadingElement>> = ({
   className,
   ...props
 }) => (
-  <h3 className={cn('text-base font-semibold text-slate-900', className)} {...props}>
+  <h3 className={cn('text-base font-semibold text-brand-900', className)} {...props}>
     {children}
   </h3>
 );

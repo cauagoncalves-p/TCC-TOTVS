@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckCircle2, Clock, XCircle, Info } from 'lucide-react';
 import { Badge } from './Badge';
 
 export interface StatusBadgeProps {
@@ -14,7 +15,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) =
     case 'aberta':
     case 'pendente':
     case 'pendente_revisao':
-      return <Badge variant="warning" className={className}>{formatStatusLabel(status)}</Badge>;
+      return (
+        <Badge variant="warning" className={className}>
+          <Clock className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
+          <span>{formatStatusLabel(status)}</span>
+        </Badge>
+      );
 
     case 'aprovado':
     case 'corrigida':
@@ -23,20 +29,40 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) =
     case 'enviado_simulado':
     case 'concluida':
     case 'ativo':
-      return <Badge variant="success" className={className}>{formatStatusLabel(status)}</Badge>;
+      return (
+        <Badge variant="success" className={className}>
+          <CheckCircle2 className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
+          <span>{formatStatusLabel(status)}</span>
+        </Badge>
+      );
 
     case 'rejeitado':
     case 'com_inconsistencias':
     case 'atrasado':
     case 'desligado':
-      return <Badge variant="danger" className={className}>{formatStatusLabel(status)}</Badge>;
+      return (
+        <Badge variant="danger" className={className}>
+          <XCircle className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
+          <span>{formatStatusLabel(status)}</span>
+        </Badge>
+      );
 
     case 'ignorada':
     case 'lido':
-      return <Badge variant="neutral" className={className}>{formatStatusLabel(status)}</Badge>;
+      return (
+        <Badge variant="neutral" className={className}>
+          <Info className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
+          <span>{formatStatusLabel(status)}</span>
+        </Badge>
+      );
 
     default:
-      return <Badge variant="default" className={className}>{status}</Badge>;
+      return (
+        <Badge variant="default" className={className}>
+          <Info className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
+          <span>{status}</span>
+        </Badge>
+      );
   }
 };
 

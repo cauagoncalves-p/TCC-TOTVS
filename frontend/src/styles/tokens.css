@@ -1,18 +1,48 @@
-:root {
-  --color-totvs-navy: #0B192C;
-  --color-totvs-navy-light: #1E3E62;
-  --color-totvs-primary: #0066FF;
-  --color-totvs-accent: #00D2D3;
-  --color-totvs-surface: #F8FAFC;
-  --color-totvs-border: #E2E8F0;
+/* frontend/src/styles/tokens.css */
+/* Tokens de Design System inspirados na identidade visual TOTVS */
 
-  /* Risco / Severidade */
-  --color-risk-high: #EF4444;
-  --color-risk-high-bg: #FEE2E2;
-  --color-risk-moderate: #F59E0B;
-  --color-risk-moderate-bg: #FEF3C7;
-  --color-risk-low: #10B981;
-  --color-risk-low-bg: #D1FAE5;
+:root {
+  /* Marca TOTVS */
+  --brand-950: #071427; /* Fundo do menu lateral e da barra superior */
+  --brand-900: #0B2447; /* Títulos, textos de destaque em fundo claro */
+  --brand-700: #19376D; /* Hover de itens do menu, bordas ativas */
+  --brand-500: #1E6BFF; /* Cor de ação: botão primário, links, foco */
+  --brand-300: #8FB8FF; /* Estados secundários, gráficos de apoio */
+  --brand-100: #E6F0FF; /* Fundos de destaque suaves, linha selecionada */
+  --accent-cyan: #12B5E5; /* Detalhes e realces pontuais */
+
+  /* Neutros e superfícies */
+  --bg-app: #F5F7FB; /* Fundo geral da aplicação */
+  --bg-surface: #FFFFFF; /* Cards, tabelas, formulários */
+  --border: #D9DFEA; /* Bordas e divisores */
+  --text-primary: #111827; /* Texto principal */
+  --text-secondary: #4B5563; /* Texto de apoio */
+  --text-on-brand: #FFFFFF; /* Texto sobre fundos da marca */
+  --focus-ring: #1E6BFF; /* Contorno de foco visível */
+
+  /* Semânticos (cada um com fundo suave e texto escuro para contraste AA) */
+  --risk-high: #A31515; /* Risco alto, erro, atrasado */
+  --risk-high-bg: #FDECEA;
+  --risk-moderate: #7A4A00; /* Risco moderado, atenção */
+  --risk-moderate-bg: #FFF4E0;
+  --risk-low: #1B5E20; /* Risco baixo, sucesso, em dia */
+  --risk-low-bg: #E8F5E9;
+  --info: #0D47A1; /* Informação, pendente */
+  --info-bg: #E3F2FD;
+
+  /* Mapeamento de compatibilidade com tokens legados */
+  --color-totvs-navy: var(--brand-950);
+  --color-totvs-navy-light: var(--brand-700);
+  --color-totvs-primary: var(--brand-500);
+  --color-totvs-accent: var(--accent-cyan);
+  --color-totvs-surface: var(--bg-app);
+  --color-totvs-border: var(--border);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-bg: var(--risk-high-bg);
+  --color-risk-moderate: var(--risk-moderate);
+  --color-risk-moderate-bg: var(--risk-moderate-bg);
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-bg: var(--risk-low-bg);
 
   /* Tipografia */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;

@@ -16,7 +16,7 @@ export const SourceBadge: React.FC<SourceBadgeProps> = ({
   if (sourceType === 'interna') {
     return (
       <Badge variant="default" className={className}>
-        <ShieldCheck className="w-3 h-3 text-slate-500" />
+        <ShieldCheck className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
         <span>Regra interna</span>
       </Badge>
     );
@@ -25,7 +25,7 @@ export const SourceBadge: React.FC<SourceBadgeProps> = ({
   if (sourceVerified) {
     return (
       <Badge variant="success" className={className}>
-        <ShieldCheck className="w-3 h-3 text-emerald-600" />
+        <ShieldCheck className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
         <span>Fonte oficial (verificada)</span>
       </Badge>
     );
@@ -33,7 +33,7 @@ export const SourceBadge: React.FC<SourceBadgeProps> = ({
 
   return (
     <Badge variant="warning" className={className}>
-      <HelpCircle className="w-3 h-3 text-amber-600" />
+      <HelpCircle className="w-3 h-3 text-current shrink-0" aria-hidden="true" />
       <span>Fonte oficial (a conferir)</span>
     </Badge>
   );

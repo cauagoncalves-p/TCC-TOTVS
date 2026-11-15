@@ -10,6 +10,8 @@ export function maskCpf(cpf: string | null | undefined): string {
   return `***.***.***-${clean.slice(-2)}`;
 }
 
+export const maskCpfHidden = maskCpf;
+
 // Formatação monetária (BRL)
 export function formatCurrency(value: number | null | undefined): string {
   if (value === null || value === undefined || isNaN(value)) return 'R$ 0,00';

@@ -49,15 +49,16 @@ async function listLogs({ limit = 50, offset = 0 } = {}) {
       SELECT
         l.Id,
         l.UserId,
-        u.name AS UserName,
-        u.role AS UserRole,
+        COALESCE(e.FullName, u.Email) AS UserName,
+        u.Role AS UserRole,
         l.Action,
         l.EntityType,
         l.EntityId,
         l.DetailsJson,
         l.CreatedAt
       FROM dbo.ComplianceAuditLog l
-      LEFT JOIN dbo.[${userTable}] u ON u.id = l.UserId
+      LEFT JOIN dbo.[${userTable}] u ON u.Id = l.UserId
+      LEFT JOIN dbo.Employees e ON e.UserId = u.Id
       ORDER BY l.CreatedAt DESC
       OFFSET @offset ROWS
       FETCH NEXT @limit ROWS ONLY

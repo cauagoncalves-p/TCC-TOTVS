@@ -11,6 +11,8 @@ export interface FileDropzoneProps {
   isUploading?: boolean;
   errorMessage?: string | null;
   className?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 export const FileDropzone: React.FC<FileDropzoneProps> = ({
@@ -20,7 +22,9 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   disabled = false,
   isUploading = false,
   errorMessage = null,
-  className
+  className,
+  title,
+  subtitle
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -153,10 +157,10 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
         ) : (
           <div className="space-y-1.5">
             <p className="text-sm font-semibold text-slate-800">
-              Arraste a ficha cadastral em PDF aqui ou clique para selecionar
+              {title || 'Arraste o arquivo PDF aqui ou clique para selecionar'}
             </p>
             <p className="text-xs text-slate-500">
-              Aceita somente arquivos PDF de até {maxSizeMb} MB (com texto selecionável)
+              {subtitle || `Aceita somente arquivos PDF de até ${maxSizeMb} MB (com texto selecionável)`}
             </p>
           </div>
         )}

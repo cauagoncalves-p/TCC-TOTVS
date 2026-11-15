@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { ComplianceIssue, ComplianceRun } from '../../../types/api';
 import { StatCard } from '../../../components/ui/StatCard';
+import { chartColors } from '../../../styles/chartColors';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Skeleton } from '../../../components/ui/Skeleton';
@@ -99,9 +100,9 @@ export const ComplianceDashboardTab: React.FC<ComplianceDashboardTabProps> = ({
   };
 
   const priorityChartData = [
-    { name: 'Alta', count: priorityCount.Alta, color: '#ef4444' },
-    { name: 'Média', count: priorityCount.Média, color: '#f59e0b' },
-    { name: 'Baixa', count: priorityCount.Baixa, color: '#3b82f6' }
+    { name: 'Alta', count: priorityCount.Alta, color: chartColors.redChart },
+    { name: 'Média', count: priorityCount.Média, color: chartColors.amberChart },
+    { name: 'Baixa', count: priorityCount.Baixa, color: chartColors.brandPrimary }
   ];
 
   // Gráfico 2: Top Regras com Inconsistências
@@ -272,10 +273,10 @@ export const ComplianceDashboardTab: React.FC<ComplianceDashboardTabProps> = ({
           </div>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={priorityChartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} />
               <XAxis dataKey="name" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }} />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {priorityChartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -306,17 +307,17 @@ export const ComplianceDashboardTab: React.FC<ComplianceDashboardTabProps> = ({
                 data={topRulesData}
                 margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
                 <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={90} />
                 <Tooltip
-                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }}
                   formatter={(val: any, _name: any, p: any) => [
                     `${val} ocorrências`,
                     p?.payload?.title || ''
                   ]}
                 />
-                <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill={chartColors.purple} radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -339,22 +340,22 @@ export const ComplianceDashboardTab: React.FC<ComplianceDashboardTabProps> = ({
           ) : (
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={historyChartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} />
                 <XAxis dataKey="data" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Line
                   type="monotone"
                   dataKey="Abertas"
-                  stroke="#ef4444"
+                  stroke={chartColors.redChart}
                   strokeWidth={2}
                   activeDot={{ r: 4 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="Novas"
-                  stroke="#f59e0b"
+                  stroke={chartColors.amberChart}
                   strokeWidth={2}
                   strokeDasharray="4 4"
                 />
@@ -380,18 +381,18 @@ export const ComplianceDashboardTab: React.FC<ComplianceDashboardTabProps> = ({
           ) : (
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={deptChartData} margin={{ top: 10, right: 20, left: 0, bottom: 15 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.gridLight} />
                 <XAxis dataKey="department" tick={{ fontSize: 10 }} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: chartColors.grid }}
                   formatter={(val: any, name: any) => [
                     name === 'Conformidade' ? `${val}%` : val,
                     name
                   ]}
                   labelFormatter={(_label, payload) => payload?.[0]?.payload?.fullName || _label}
                 />
-                <Bar dataKey="Conformidade" fill="#10b981" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Conformidade" fill={chartColors.greenChart} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

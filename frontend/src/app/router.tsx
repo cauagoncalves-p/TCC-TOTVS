@@ -12,15 +12,27 @@ import { ChatPage } from '../pages/chat/ChatPage';
 import { ProfilePage } from '../pages/profile/ProfilePage';
 import { OnboardingPage } from '../pages/onboarding/OnboardingPage';
 import { OnboardingReviewPage } from '../pages/onboarding/OnboardingReviewPage';
+import { NewManualPage } from '../pages/onboarding/NewManualPage';
+import { NewDocumentPage } from '../pages/onboarding/NewDocumentPage';
 import { AnalyticsPage } from '../pages/analytics/AnalyticsPage';
 import { CompliancePage } from '../pages/compliance/CompliancePage';
 import { KnowledgePage } from '../pages/knowledge/KnowledgePage';
 import { LaborAssistantPage } from '../pages/assistant/LaborAssistantPage';
+import { UsersPage } from '../pages/admin/UsersPage';
+import { ForceChangePasswordPage } from '../pages/auth/ForceChangePasswordPage';
 
 export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />
+  },
+  {
+    path: '/force-change-password',
+    element: (
+      <RequireAuth>
+        <ForceChangePasswordPage />
+      </RequireAuth>
+    )
   },
   {
     path: '/unauthorized',
@@ -66,6 +78,22 @@ export const router = createBrowserRouter([
         )
       },
       {
+        path: 'onboarding/novo/manual',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <NewManualPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'onboarding/novo/documento',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <NewDocumentPage />
+          </RequireRole>
+        )
+      },
+      {
         path: 'onboarding/:id',
         element: (
           <RequireRole allowedRoles={['rh']}>
@@ -94,20 +122,34 @@ export const router = createBrowserRouter([
         )
       },
 
-      // Rotas de Conhecimento e Assistente Trabalhista (RH) - Fase F4c
+      // Rotas de Conhecimento e Assistente Trabalhista (RH e Gestor) - Fase F4c / 5D
       {
         path: 'knowledge',
         element: (
-          <RequireRole allowedRoles={['rh']}>
+          <RequireRole allowedRoles={['rh', 'gestor']}>
             <KnowledgePage />
           </RequireRole>
         )
       },
       {
+        path: 'conhecimento',
+        element: <Navigate to="/knowledge" replace />
+      },
+      {
         path: 'assistant',
         element: (
-          <RequireRole allowedRoles={['rh']}>
+          <RequireRole allowedRoles={['rh', 'gestor']}>
             <LaborAssistantPage />
+          </RequireRole>
+        )
+      },
+
+      // Rotas de Administração de Usuários e Perfis (RH) - Fase F11
+      {
+        path: 'admin/users',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <UsersPage />
           </RequireRole>
         )
       }

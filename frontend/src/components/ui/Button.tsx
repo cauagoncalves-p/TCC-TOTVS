@@ -16,14 +16,15 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
+  const baseStyles =
+    'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
 
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm',
-    secondary: 'bg-slate-800 text-white hover:bg-slate-900 focus:ring-slate-700',
-    outline: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:ring-blue-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm',
-    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-400'
+    primary: 'bg-brand-500 text-text-on-brand hover:bg-brand-700 focus:ring-brand-500 shadow-xs',
+    secondary: 'border border-brand-500 bg-app-surface text-brand-900 hover:bg-brand-100 focus:ring-brand-500',
+    outline: 'border border-app-border bg-app-surface text-text-primary hover:bg-brand-100/60 hover:text-brand-900 focus:ring-brand-500',
+    danger: 'bg-risk-high text-white hover:opacity-90 focus:ring-red-500 shadow-xs',
+    ghost: 'text-text-secondary hover:bg-brand-100 hover:text-brand-900 focus:ring-brand-500'
   };
 
   const sizeStyles = {

@@ -1,13 +1,14 @@
 // backend/scripts/setPasswords.js
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: true });
 const bcrypt = require('bcryptjs');
 const { poolPromise } = require('../src/config/db');
 
 const USERS = [
-  { name: 'Ana Souza', email: 'ana.souza@exemplo.com', role: 'colaborador' },
-  { name: 'Bruno Lima', email: 'bruno.lima@exemplo.com', role: 'colaborador' },
-  { name: 'Roberta RH', email: 'roberta.rh@exemplo.com', role: 'rh' },
-  { name: 'Carlos Gestor', email: 'carlos.gestor@exemplo.com', role: 'gestor' }
+  { email: 'ana.souza@exemplo.com', role: 'colaborador' },
+  { email: 'bruno.lima@exemplo.com', role: 'colaborador' },
+  { email: 'roberta.rh@exemplo.com', role: 'rh' },
+  { email: 'carlos.gestor@exemplo.com', role: 'gestor' }
 ];
 
 (async () => {
@@ -18,22 +19,31 @@ const USERS = [
     for (const u of USERS) {
       const check = await pool.request()
         .input('email', u.email)
-        .query('SELECT id FROM users WHERE email = @email');
+        .query('SELECT Id FROM dbo.Users WHERE LOWER(Email) = LOWER(@email)');
 
       if (check.recordset.length > 0) {
         await pool.request()
           .input('email', u.email)
           .input('pwd', hashed)
           .input('role', u.role)
-          .query('UPDATE users SET password_hash = @pwd, role = @role WHERE email = @email');
+          .query(`
+            UPDATE dbo.Users 
+            SET PasswordHash = @pwd, 
+                Role = @role, 
+                IsActive = 1, 
+                MustChangePassword = 0 
+            WHERE LOWER(Email) = LOWER(@email)
+          `);
         console.log(`Usuário atualizado: ${u.email} (role: ${u.role}) com senha '123456'`);
       } else {
         await pool.request()
-          .input('name', u.name)
           .input('email', u.email)
           .input('pwd', hashed)
           .input('role', u.role)
-          .query('INSERT INTO users (name, email, password_hash, role, created_at) VALUES (@name, @email, @pwd, @role, GETDATE())');
+          .query(`
+            INSERT INTO dbo.Users (Email, PasswordHash, Role, IsActive, MustChangePassword, CreatedAt) 
+            VALUES (@email, @pwd, @role, 1, 0, SYSUTCDATETIME())
+          `);
         console.log(`Usuário criado: ${u.email} (role: ${u.role}) com senha '123456'`);
       }
     }

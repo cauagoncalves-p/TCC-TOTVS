@@ -82,9 +82,10 @@ async function getDocumentsByCaseId(caseId) {
       SELECT
         d.Id, d.CaseId, d.FileName, d.DocumentType, d.TypeSource, d.ExtractionMethod,
         d.PageCount, d.ExtractedJson, d.EvidenceReport, d.CreatedBy, d.CreatedAt,
-        u.name AS CreatedByName
+        COALESCE(e.FullName, u.Email) AS CreatedByName
       FROM dbo.OnboardingDocuments d
-      LEFT JOIN dbo.users u ON u.id = d.CreatedBy
+      LEFT JOIN dbo.Users u ON u.Id = d.CreatedBy
+      LEFT JOIN dbo.Employees e ON e.UserId = u.Id
       WHERE d.CaseId = @caseId
       ORDER BY d.CreatedAt ASC, d.Id ASC
     `);
@@ -134,11 +135,13 @@ async function getById(id) {
       SELECT
         c.Id, c.Status, c.Origin, c.SourceFileName, c.ExtractedJson, c.ReviewedJson, c.ValidationIssues,
         c.CreatedBy, c.CreatedAt, c.ReviewedBy, c.ReviewedAt, c.EmployeeId, c.RejectionReason,
-        uCreator.name AS CreatedByName,
-        uReviewer.name AS ReviewedByName
+        COALESCE(eCreator.FullName, uCreator.Email) AS CreatedByName,
+        COALESCE(eReviewer.FullName, uReviewer.Email) AS ReviewedByName
       FROM dbo.OnboardingCases c
-      LEFT JOIN dbo.users uCreator ON uCreator.id = c.CreatedBy
-      LEFT JOIN dbo.users uReviewer ON uReviewer.id = c.ReviewedBy
+      LEFT JOIN dbo.Users uCreator ON uCreator.Id = c.CreatedBy
+      LEFT JOIN dbo.Employees eCreator ON eCreator.UserId = uCreator.Id
+      LEFT JOIN dbo.Users uReviewer ON uReviewer.Id = c.ReviewedBy
+      LEFT JOIN dbo.Employees eReviewer ON eReviewer.UserId = uReviewer.Id
       WHERE c.Id = @id
     `);
   return result.recordset[0];
@@ -153,11 +156,13 @@ async function listCases(status) {
   let query = `
     SELECT
       c.Id, c.Status, c.Origin, c.SourceFileName, c.CreatedAt, c.ReviewedAt, c.EmployeeId,
-      uCreator.name AS CreatedByName,
-      uReviewer.name AS ReviewedByName
+      COALESCE(eCreator.FullName, uCreator.Email) AS CreatedByName,
+      COALESCE(eReviewer.FullName, uReviewer.Email) AS ReviewedByName
     FROM dbo.OnboardingCases c
-    LEFT JOIN dbo.users uCreator ON uCreator.id = c.CreatedBy
-    LEFT JOIN dbo.users uReviewer ON uReviewer.id = c.ReviewedBy
+    LEFT JOIN dbo.Users uCreator ON uCreator.Id = c.CreatedBy
+    LEFT JOIN dbo.Employees eCreator ON eCreator.UserId = uCreator.Id
+    LEFT JOIN dbo.Users uReviewer ON uReviewer.Id = c.ReviewedBy
+    LEFT JOIN dbo.Employees eReviewer ON eReviewer.UserId = uReviewer.Id
   `;
 
   if (status) {

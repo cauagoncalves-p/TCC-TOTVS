@@ -6,8 +6,9 @@ require('dotenv').config();
 async function test() {
   try {
     console.log('--- Testando Login de ana.souza@exemplo.com ---');
-    const token = await authService.login('ana.souza@exemplo.com', '123456');
-    console.log('Login bem-sucedido! Token gerado:', token.substring(0, 30) + '...');
+    const loginRes = await authService.login('ana.souza@exemplo.com', '123456');
+    const token = loginRes.token || loginRes;
+    console.log('Login bem-sucedido! Token gerado:', token.substring(0, 30) + '...', 'MustChangePassword:', loginRes.mustChangePassword);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Token decodificado:', decoded);

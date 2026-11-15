@@ -21,9 +21,9 @@ function parseJwt(token: string): { id: number; role: UserRole } | null {
 }
 
 export const authService = {
-  async login(email: string, password: string): Promise<UserSession> {
+  async login(email: string, password: string): Promise<UserSession & { mustChangePassword?: boolean }> {
     const response = await http.post<LoginResponse>('/api/auth/login', { email, password });
-    const { token } = response.data;
+    const { token, mustChangePassword } = response.data;
 
     sessionStorage.setItem(TOKEN_KEY, token);
 
@@ -35,11 +35,28 @@ export const authService = {
     const session: UserSession = {
       id: payload.id,
       role: payload.role,
-      email
+      email,
+      mustChangePassword: Boolean(mustChangePassword)
     };
 
     sessionStorage.setItem(USER_KEY, JSON.stringify(session));
     return session;
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
+    const response = await http.post<{ message: string }>('/api/auth/change-password', {
+      currentPassword,
+      newPassword
+    });
+
+    // Atualiza a flag na sessão se existir
+    const currentSession = this.getUser();
+    if (currentSession) {
+      currentSession.mustChangePassword = false;
+      sessionStorage.setItem(USER_KEY, JSON.stringify(currentSession));
+    }
+
+    return response.data;
   },
 
   logout(): void {
