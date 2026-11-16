@@ -304,7 +304,7 @@ export const TestQuestionPanel: React.FC<TestQuestionPanelProps> = ({
                             >
                               {src.docType === 'politica_interna'
                                 ? '🏢 Política interna'
-                                : `📄 ${DOC_TYPE_LABELS[src.docType as any] || src.docType}`}
+                                : `📄 ${DOC_TYPE_LABELS[src.docType as keyof typeof DOC_TYPE_LABELS] || src.docType}`}
                             </span>
                             {src.score !== undefined && (
                               <span className="text-[10px] text-slate-400">

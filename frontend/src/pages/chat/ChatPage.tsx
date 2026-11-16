@@ -27,14 +27,14 @@ export const ChatPage: React.FC = () => {
   } = useChat();
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6.5rem)] max-w-5xl mx-auto">
-      {/* Header com Ações */}
-      <PageHeader
-        title="Assistente de RH"
-        subtitle="Consulte saldo de férias, esclareça dúvidas sobre holerite e benefícios corporativos"
-        action={
-          <div className="flex items-center gap-2">
-            {sessionId && (
+    <div className="flex flex-col h-[calc(100dvh-5.5rem)] sm:h-[calc(100vh-6.5rem)] max-w-5xl mx-auto min-h-0">
+      {/* Header com Ações visível a partir de sm */}
+      <div className="hidden sm:block">
+        <PageHeader
+          title="Assistente de RH"
+          subtitle="Consulte saldo de férias, esclareça dúvidas sobre holerite e benefícios corporativos"
+          action={
+            sessionId ? (
               <Button
                 variant="outline"
                 size="sm"
@@ -44,33 +44,33 @@ export const ChatPage: React.FC = () => {
                 <MessageSquarePlus className="w-4 h-4 text-primary" />
                 Nova Conversa
               </Button>
-            )}
-          </div>
-        }
-      />
-
-      {/* Banner Informativo */}
-      <div className="mb-4">
-        <DisclaimerBanner
-          type="assistant"
-          message="Este assistente consulta diretamente seus dados funcionais e a base interna de benefícios. Informações oficiais sujeitas às políticas de RH e CCT vigente."
+            ) : undefined
+          }
         />
+
+        {/* Banner Informativo Desktop */}
+        <div className="mb-3">
+          <DisclaimerBanner
+            type="assistant"
+            message="Este assistente consulta diretamente seus dados funcionais e a base interna de benefícios. Informações oficiais sujeitas às políticas de RH e CCT vigente."
+          />
+        </div>
       </div>
 
-      {/* Área Principal do Chat */}
-      <div className="flex-1 min-h-0">
+      {/* Área Principal do Chat (ocupa toda a altura útil no mobile) */}
+      <div className="flex-1 min-h-0 flex flex-col">
         {isLoadingHistory ? (
-          <div className="h-full bg-card rounded-xl border border-border p-6 space-y-4">
-            <div className="flex items-center space-x-3 mb-6">
-              <Skeleton className="w-10 h-10 rounded-full" />
-              <div className="space-y-2">
-                <Skeleton className="w-48 h-4" />
-                <Skeleton className="w-32 h-3" />
+          <div className="h-full bg-card rounded-xl border border-border p-4 sm:p-6 space-y-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <Skeleton className="w-9 h-9 rounded-full" />
+              <div className="space-y-1.5">
+                <Skeleton className="w-40 h-4" />
+                <Skeleton className="w-28 h-3" />
               </div>
             </div>
-            <Skeleton className="w-3/4 h-16 rounded-2xl ml-auto" />
-            <Skeleton className="w-2/3 h-24 rounded-2xl" />
-            <Skeleton className="w-1/2 h-16 rounded-2xl ml-auto" />
+            <Skeleton className="w-3/4 h-14 rounded-2xl ml-auto" />
+            <Skeleton className="w-2/3 h-20 rounded-2xl" />
+            <Skeleton className="w-1/2 h-14 rounded-2xl ml-auto" />
           </div>
         ) : (
           <ChatPanel
@@ -80,6 +80,22 @@ export const ChatPage: React.FC = () => {
             suggestions={CHAT_SUGGESTIONS}
             errorMessage={errorMessage}
             onClearError={clearError}
+            title="Assistente de RH"
+            subtitle="Férias, holerite e benefícios"
+            action={
+              sessionId ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startNewSession}
+                  className="flex items-center gap-1.5 text-xs px-2.5 py-1 sm:hidden h-8"
+                  title="Iniciar nova conversa"
+                >
+                  <MessageSquarePlus className="w-3.5 h-3.5 text-primary" />
+                  <span>Nova</span>
+                </Button>
+              ) : undefined
+            }
           />
         )}
       </div>

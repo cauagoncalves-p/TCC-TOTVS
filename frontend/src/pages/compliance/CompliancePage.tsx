@@ -83,8 +83,8 @@ export const CompliancePage: React.FC = () => {
       />
 
       {/* Navegação por Abas (Fase F4b) */}
-      <div className="border-b border-slate-200">
-        <nav className="flex space-x-6">
+      <div className="border-b border-slate-200 overflow-x-auto scrollbar-none">
+        <nav className="flex space-x-4 sm:space-x-6 min-w-max pb-px">
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex items-center gap-2 py-3 px-1 border-b-2 font-medium text-xs transition-colors ${

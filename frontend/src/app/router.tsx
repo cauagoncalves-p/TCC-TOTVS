@@ -17,6 +17,7 @@ import { NewDocumentPage } from '../pages/onboarding/NewDocumentPage';
 import { AnalyticsPage } from '../pages/analytics/AnalyticsPage';
 import { CompliancePage } from '../pages/compliance/CompliancePage';
 import { KnowledgePage } from '../pages/knowledge/KnowledgePage';
+import { PolicyEditorPage } from '../pages/knowledge/PolicyEditorPage';
 import { LaborAssistantPage } from '../pages/assistant/LaborAssistantPage';
 import { UsersPage } from '../pages/admin/UsersPage';
 import { ForceChangePasswordPage } from '../pages/auth/ForceChangePasswordPage';
@@ -132,8 +133,32 @@ export const router = createBrowserRouter([
         )
       },
       {
+        path: 'knowledge/policies/new',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <PolicyEditorPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'knowledge/policies/:id/edit',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <PolicyEditorPage />
+          </RequireRole>
+        )
+      },
+      {
         path: 'conhecimento',
         element: <Navigate to="/knowledge" replace />
+      },
+      {
+        path: 'conhecimento/politicas/nova',
+        element: <Navigate to="/knowledge/policies/new" replace />
+      },
+      {
+        path: 'conhecimento/politicas/:id/editar',
+        element: <Navigate to="/knowledge/policies/:id/edit" replace />
       },
       {
         path: 'assistant',

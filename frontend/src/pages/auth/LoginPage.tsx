@@ -67,18 +67,18 @@ export const LoginPage: React.FC = () => {
 
       <div className="w-full max-w-md">
         {/* Header Branding */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/20 mb-3">
-            <Sparkles className="w-8 h-8 text-white" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/20 mb-3">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">TOTVS RH Inteligente</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">TOTVS RH Inteligente</h1>
           <p className="text-xs text-slate-300 mt-1">
             Plataforma de Gestão, Inteligência Preditiva e Compliance com IA
           </p>
         </div>
 
         {/* Card de Login */}
-        <Card className="p-7 bg-app-surface shadow-2xl border border-app-border">
+        <Card className="p-4 sm:p-7 bg-app-surface shadow-2xl border border-app-border">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Input
@@ -126,11 +126,11 @@ export const LoginPage: React.FC = () => {
             <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block text-center mb-2.5">
               Acesso Rápido para Demonstração (Demo)
             </span>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => handleQuickLogin('ana.souza@exemplo.com')}
-                className="p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Ana Souza</span>
                 <span className="block text-[9px] text-text-secondary font-medium">Colaborador</span>
@@ -139,7 +139,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('roberta.rh@exemplo.com')}
-                className="p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Roberta RH</span>
                 <span className="block text-[9px] text-brand-500 font-semibold">Perfil RH</span>
@@ -148,7 +148,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('carlos.gestor@exemplo.com')}
-                className="p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Carlos</span>
                 <span className="block text-[9px] text-risk-moderate font-semibold">Perfil Gestor</span>

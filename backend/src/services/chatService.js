@@ -73,7 +73,25 @@ async function handleMessage({ userId, sessionId, message }) {
     toolUsed
   });
 
-  return { sessionId: sessId, reply };
+  // Mapeia fontes únicas dos trechos de conhecimento recuperados
+  const sourcesMap = new Map();
+  if (Array.isArray(dynamicChunks)) {
+    for (const c of dynamicChunks) {
+      if (c.title && !sourcesMap.has(c.title)) {
+        sourcesMap.set(c.title, {
+          title: c.title,
+          docType: c.docType,
+          version: c.version,
+          section: c.sectionRef,
+          page: c.page,
+          publishedAt: c.publishedAt
+        });
+      }
+    }
+  }
+  const sources = Array.from(sourcesMap.values());
+
+  return { sessionId: sessId, reply, toolUsed, sources };
 }
 
 /**

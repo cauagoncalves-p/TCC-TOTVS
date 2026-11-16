@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   Accessibility,
   KeyRound,
-  ChevronDown
+  ChevronDown,
+  Menu
 } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { Button } from '../../components/ui/Button';
@@ -19,7 +20,11 @@ import { formatDate } from '../../lib/formatters';
 import { AccessibilityPanel } from '../../features/accessibility/components/AccessibilityPanel';
 import { ChangePasswordModal } from '../../features/admin/components/ChangePasswordModal';
 
-export const TopNavbar: React.FC = () => {
+interface TopNavbarProps {
+  onToggleMobileSidebar?: () => void;
+}
+
+export const TopNavbar: React.FC<TopNavbarProps> = ({ onToggleMobileSidebar }) => {
   const user = authService.getUser();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
@@ -79,14 +84,26 @@ export const TopNavbar: React.FC = () => {
   };
 
   return (
-    <header className="h-16 bg-brand-950 text-text-on-brand border-b border-brand-700/60 px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-      <div className="flex items-center gap-3">
-        <h2 className="text-sm font-semibold text-text-on-brand">
+    <header className="h-16 bg-brand-950 text-text-on-brand border-b border-brand-700/60 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        {/* Botão Hambúrguer para abrir Sidebar no Mobile */}
+        {onToggleMobileSidebar && (
+          <button
+            type="button"
+            onClick={onToggleMobileSidebar}
+            className="p-2 text-slate-300 hover:text-white hover:bg-brand-700/50 rounded-lg md:hidden transition-colors shrink-0"
+            aria-label="Abrir menu de navegação"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        <h2 className="text-xs sm:text-sm font-semibold text-text-on-brand truncate max-w-[170px] sm:max-w-none">
           Painel de Gestão e Operação
         </h2>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* Botão de Acessibilidade */}
         <button
           type="button"
@@ -115,7 +132,7 @@ export const TopNavbar: React.FC = () => {
 
           {/* Dropdown de Notificações */}
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-app-surface text-text-primary border border-app-border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in duration-100">
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-app-surface text-text-primary border border-app-border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in duration-100">
               <div className="p-3 bg-app-bg border-b border-app-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4 text-brand-500" />

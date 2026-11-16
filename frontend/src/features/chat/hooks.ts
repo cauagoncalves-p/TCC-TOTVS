@@ -79,6 +79,7 @@ export const useChat = () => {
         role: 'model',
         content: data.reply,
         toolUsed: data.toolUsed,
+        sources: data.sources || [],
         createdAt: new Date().toISOString(),
       };
       setLocalMessages((prev) => [...prev, botMsg]);

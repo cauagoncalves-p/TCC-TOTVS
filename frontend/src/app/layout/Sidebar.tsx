@@ -9,7 +9,8 @@ import {
   BookOpen,
   HelpCircle,
   Sparkles,
-  Users
+  Users,
+  X
 } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { UserRole } from '../../types/auth';
@@ -21,6 +22,11 @@ interface NavItem {
   icon: React.ReactNode;
   roles: UserRole[];
   badge?: string;
+}
+
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -79,29 +85,43 @@ const NAV_ITEMS: NavItem[] = [
   }
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onCloseMobile }) => {
   const user = authService.getUser();
   const currentRole = user?.role || 'colaborador';
 
   const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(currentRole));
 
-  return (
-    <aside className="w-64 bg-brand-950 text-text-on-brand flex flex-col shrink-0 min-h-screen border-r border-brand-700/50">
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-brand-950 text-text-on-brand">
       {/* Brand Header */}
-      <div className="h-16 flex items-center gap-3 px-5 border-b border-brand-700/60 bg-brand-950">
-        <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-xs">
-          <Sparkles className="w-5 h-5 text-white" />
+      <div className="h-16 flex items-center justify-between px-5 border-b border-brand-700/60 bg-brand-950 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-xs">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <span className="text-sm font-bold tracking-tight block text-white">TOTVS RH</span>
+            <span className="text-[10px] font-medium text-brand-300 block -mt-0.5 uppercase tracking-wider">
+              Inteligente
+            </span>
+          </div>
         </div>
-        <div>
-          <span className="text-sm font-bold tracking-tight block text-white">TOTVS RH</span>
-          <span className="text-[10px] font-medium text-brand-300 block -mt-0.5 uppercase tracking-wider">
-            Inteligente
-          </span>
-        </div>
+
+        {/* Botão de Fechar para Mobile */}
+        {onCloseMobile && (
+          <button
+            type="button"
+            onClick={onCloseMobile}
+            className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-brand-700/50 md:hidden transition-colors"
+            aria-label="Fechar menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Role Indicator Banner */}
-      <div className="px-4 py-3 mx-3 my-3 bg-brand-900/60 rounded-xl border border-brand-700/60">
+      <div className="px-4 py-3 mx-3 my-3 bg-brand-900/60 rounded-xl border border-brand-700/60 shrink-0">
         <span className="text-[10px] font-medium uppercase tracking-wider text-slate-300 block mb-0.5">
           Perfil de Acesso
         </span>
@@ -121,9 +141,10 @@ export const Sidebar: React.FC = () => {
           <NavLink
             key={item.to}
             to={item.to}
+            onClick={() => onCloseMobile?.()}
             className={({ isActive }) =>
               cn(
-                'flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all group',
+                'flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all group min-h-[40px]',
                 isActive
                   ? 'bg-brand-700 text-white font-semibold shadow-xs border-l-4 border-brand-500'
                   : 'text-slate-300 hover:bg-brand-700/50 hover:text-white'
@@ -145,10 +166,41 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-brand-700/60 text-[11px] text-slate-400">
+      <div className="p-4 border-t border-brand-700/60 text-[11px] text-slate-400 shrink-0">
         TOTVS RH Inteligente v1.0
         <span className="block text-[10px] text-slate-400 mt-0.5">TCC Case TOTVS</span>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Sidebar Desktop Fixa */}
+      <aside className="hidden md:flex w-64 shrink-0 min-h-screen border-r border-brand-700/50">
+        {sidebarContent}
+      </aside>
+
+      {/* Drawer Mobile com Backdrop */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex animate-in fade-in duration-200">
+          {/* Backdrop Escurecido */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={onCloseMobile}
+            aria-hidden="true"
+          />
+
+          {/* Gaveta Lateral */}
+          <aside
+            className="relative z-10 w-72 max-w-[85vw] h-full shadow-2xl flex flex-col animate-in slide-in-from-left duration-250"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de Navegação Principal"
+          >
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 };

@@ -1,6 +1,6 @@
 # TOTVS RH Inteligente
 
-Plataforma inteligente de Recursos Humanos desenvolvida como solução corporativa integrando autoatendimento para colaboradores, admissão digital universal com inteligência artificial, analytics preditivo de indicadores de pessoas e auditoria contínua de compliance trabalhista/eSocial.
+Plataforma inteligente de Recursos Humanos desenvolvida como solução corporativa integrando autoatendimento conversacional para colaboradores, admissão digital universal com inteligência artificial, analytics preditivo de indicadores de pessoas, auditoria contínua de compliance trabalhista/eSocial e base de conhecimento unificada com RAG (Retrieval-Augmented Generation).
 
 ---
 
@@ -8,15 +8,15 @@ Plataforma inteligente de Recursos Humanos desenvolvida como solução corporati
 
 - **Node.js**: v18.0.0 ou superior (recomendado v20+)
 - **NPM**: v9.0.0 ou superior
-- **SQL Server**: 2019 ou superior (Express, Developer ou Standard)
+- **SQL Server**: 2019 ou superior (Express, Developer ou Standard) na porta `1434` (ou padrão `1433`)
 - **Python**: 3.10 ou superior *(necessário apenas para o microserviço preditivo ML da Fase B)*
-- **Chave de API do Google Gemini**: Obtida no Google AI Studio (modelo recomendado: `gemini-3-flash-preview`)
+- **Chave de API do Google Gemini**: Obtida no Google AI Studio (modelo recomendado: `gemini-2.5-flash`)
 
 ---
 
 ## 2. Banco de Dados: Ordem dos Scripts SQL
 
-Os scripts devem ser executados em ordem sequencial no banco de dados SQL Server (`EduTrackDB` ou `TotvsRhInteligenteDb`):
+Os scripts devem ser executados em ordem sequencial no banco de dados SQL Server (`TotvsRhInteligenteDb`):
 
 1. **`database/001_chatbot_schema.sql`**  
    Criação das estruturas essenciais: tabelas `Users`, `Employees`, `Payslips`, `PayslipItems`, `Vacations`, `ChatSessions` e `ChatMessages`.
@@ -30,6 +30,16 @@ Os scripts devem ser executados em ordem sequencial no banco de dados SQL Server
    Extensão do onboarding universal: tabela de documentos anexos `OnboardingDocuments`, perfis profissionais `EmployeeProfiles` e controle de fusão cadastral.
 6. **`database/006_onboarding_manual.sql`**  
    Suporte a preenchimento manual sem PDF: ajustes de nulabilidade para `Origin` e rastreabilidade cadastral unificada.
+7. **`database/007_user_admin.sql`**  
+   Módulo de administração de usuários: listagem corporativa, criação e bloqueio de contas.
+8. **`database/008_auth_hardening.sql`**  
+   Segurança e autenticação: política de primeiro acesso (`MustChangePassword`) e carimbo de último login (`LastLoginAt`).
+9. **`database/009_email_outbox.sql`**  
+   Fila de saída de e-mails transacionais (boas-vindas, redefinição de senha).
+10. **`database/010_seed_demo_passwords.sql`**  
+    Carga de senhas iniciais e hashes para o ambiente demonstrativo.
+11. **`database/011_knowledge_policies.sql`**  
+    Base de Conhecimento e Políticas: suporte a RAG, escopo por público (`Audience`), `SourceKind` (arquivo PDF ou texto Markdown), `IndexStatus`, `ChunkCount`, `ExtractionMethod` (texto ou `ocr_ia`), `IsArchived`, versionamento e histórico.
 
 ---
 
@@ -40,7 +50,7 @@ Com o banco de dados configurado e os scripts aplicados, execute os seeds a part
 ```bash
 cd backend
 
-# 1. Definir/atualizar senhas dos usuários com hash bcrypt seguro
+# 1. Definir/atualizar senhas de demonstração com hash bcrypt (senha: 123456)
 node scripts/setPasswords.js
 
 # 2. Popular histórico analítico de 24 meses e departamentos (Inteligência Preditiva)
@@ -48,6 +58,9 @@ node scripts/seedAnalytics.js
 
 # 3. Popular regras trabalhistas, defeitos plantados para auditoria e eventos eSocial
 node scripts/seedCompliance.js
+
+# 4. (Opcional) Gerar PDF de exemplo para teste da Base de Conhecimento
+node scripts/generateAprendizPdf.js
 ```
 
 ---
@@ -68,7 +81,7 @@ node scripts/seedCompliance.js
    ```bash
    cp .env.example .env
    ```
-   *Preencha a chave `GEMINI_API_KEY`, dados do SQL Server e `JWT_SECRET`.*
+   *Preencha `GEMINI_API_KEY`, configurações do SQL Server (`DB_SERVER`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) e `JWT_SECRET`.*
 4. Inicie o servidor:
    ```bash
    npm start
@@ -77,7 +90,7 @@ node scripts/seedCompliance.js
 
 ---
 
-### 4.2. Frontend (React + Vite + Tailwind CSS)
+### 4.2. Frontend (React + TypeScript + Vite + Tailwind CSS)
 
 1. Entre na pasta `frontend`:
    ```bash
@@ -100,7 +113,7 @@ node scripts/seedCompliance.js
 
 ---
 
-### 4.3. Microserviço Preditivo (Python FastAPI - Fase B)
+### 4.3. Microserviço Preditivo (Python FastAPI - Fase B Opcional)
 
 > **Nota:** O microserviço em Python opera de maneira desacoplada. Caso esteja desligado, o backend Node.js e o frontend gerenciam a indisponibilidade (503) de forma graciosa sem quebrar as demais funcionalidades do dashboard analítico.
 
@@ -114,21 +127,57 @@ uvicorn main:app --port 8000 --reload
 
 ---
 
-## 5. Usuários de Teste
+## 5. Módulos da Plataforma
+
+### 5.1. Chatbot do Colaborador (`/chat`)
+- Autoatendimento conversacional com IA (Google Gemini).
+- Function calling para consulta de holerite, itens de proventos/descontos e saldo de férias.
+- RAG integrado: responde dúvidas sobre políticas internas e benefícios corporativos citando fontes oficiais com selo de distinção ("Política interna" vs "Fonte oficial").
+
+### 5.2. Admissão Digital Universal (`/onboarding`)
+- Upload de ficha cadastral em PDF (com OCR por IA em caso de documento escaneado).
+- Extração estruturada de dados com Gemini e validação contra regras da CLT.
+- Revisão assistida pelo RH com destaque de divergências e aprovação em lote.
+
+### 5.3. Inteligência Preditiva (`/analytics`)
+- Painel executivo com métricas consolidadas (headcount, turnover, absenteísmo, horas extras).
+- Detecção automatizada de hotspots e motor de regras para emissão de alertas de risco (`ABS_OT_UP`, `OT_CHRONIC`, `ABS_LEADS_TURNOVER`, `TRIPLE_RISK`).
+- Resumos textuais acessíveis para leitores de tela e gráficos com série histórica de 24 meses.
+
+### 5.4. Compliance Inteligente & eSocial (`/compliance`)
+- Catálogo de regras da legislação trabalhista e regras de validação cadastral.
+- Checklist pré-eSocial com simulação de consistência para eventos S-2200, S-2230 e S-2299.
+- Trilha imutável de auditoria (`ComplianceAuditLog`).
+
+### 5.5. Base de Conhecimento & Assistente Trabalhista (`/knowledge` e `/assistant`)
+- Repositório centralizado de CLT, Manuais do eSocial, CCTs e Políticas Internas.
+- Pipeline de ingestão: fatiamento (chunking) inteligente, plano B com OCR por IA para PDFs escaneados e invalidação dinâmica de cache RAG (sem necessidade de reiniciar o backend).
+- Editor de Políticas corporativas em Markdown com sugestão de estrutura em FAQ por IA e verificação LGPD de dados pessoais (CPF, e-mail e telefone).
+- Painéis interativos: "Ver trechos" (inspeção dos chunks indexados) e "Testar pergunta" na IA com visualização de scores e citações.
+
+### 5.6. Acessibilidade & Inclusão Digital (VLibras)
+- Integração nativa com o **VLibras** (Tradutor 3D de Língua Brasileira de Sinais oficial do governo federal).
+- Carregamento tardio assíncrono com falha silenciosa para máxima resiliência.
+- Marcação semântica com foco acessível e resumos textuais complementares.
+
+---
+
+## 6. Usuários de Demonstração (Demo)
 
 | Perfil | E-mail | Senha | Módulos com Acesso |
 | :--- | :--- | :--- | :--- |
 | **Colaborador** | `ana.souza@exemplo.com` | `123456` | Assistente Virtual RH (`/chat`), Meu Perfil (`/me`) |
 | **Colaborador** | `bruno.lima@exemplo.com` | `123456` | Assistente Virtual RH (`/chat`), Meu Perfil (`/me`) |
-| **RH** | `roberta.rh@exemplo.com` | `123456` | Onboarding com IA (`/onboarding`), Inteligência Preditiva (`/analytics`), Compliance Inteligente (`/compliance`), Base de Conhecimento (`/knowledge`), Assistente Trabalhista RAG (`/assistant`) |
+| **RH** | `roberta.rh@exemplo.com` | `123456` | Todos os módulos operacionais de RH (`/onboarding`, `/analytics`, `/compliance`, `/knowledge`, `/knowledge/policies/new`, `/assistant`, `/admin/users`) |
 | **RH (Alternativo)** | `rh@exemplo.com` | `Senha@123` | Todos os módulos operacionais de RH |
-| **Gestor** | `carlos.gestor@exemplo.com` | `123456` | Inteligência Preditiva (`/analytics`), Compliance em modo somente leitura (`/compliance`) |
+| **Gestor** | `carlos.gestor@exemplo.com` | `123456` | Inteligência Preditiva (`/analytics`), Compliance em modo somente leitura (`/compliance`), Base de Conhecimento (`/knowledge`) |
 | **Gestor (Alternativo)**| `gestor@exemplo.com` | `Senha@123` | Inteligência Preditiva (`/analytics`), Compliance em modo somente leitura (`/compliance`) |
 
 ---
 
-## 6. Boas Práticas e Segurança
+## 7. Boas Práticas e Segurança
 
-- Chaves de API, senhas de banco e segredos JWT residem exclusivamente nas variáveis de ambiente do backend.
-- O mascaramento de CPF (`***.***.***-XX`) é aplicado na apresentação e na trilha imutável de auditoria.
-- Acesso controlado por perfil (RBAC) com validação estrita no servidor (JWT Bearer Token).
+- **Segurança de Segredos:** Chaves de API, senhas de banco e segredos JWT residem exclusivamente nas variáveis de ambiente do backend.
+- **LGPD:** Mascaramento de CPF (`***.***.***-XX`) na apresentação e na trilha imutável de auditoria. Dados 100% fictícios.
+- **Escopo RAG por Perfil:** O backend aplica o filtro de público (`Audience`) no momento da busca; colaboradores nunca recebem trechos de documentos de circulação restrita ao RH.
+- **Autenticação:** JWT Bearer Token com política de primeiro acesso (`MustChangePassword`) e controle de acesso baseado em papéis (RBAC).

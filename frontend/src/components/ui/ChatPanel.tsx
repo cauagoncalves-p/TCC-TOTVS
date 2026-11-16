@@ -14,7 +14,10 @@ export interface ChatMessageItem {
     title: string;
     version?: string;
     section?: string;
+    page?: number | null;
     publishedAt?: string;
+    docType?: string;
+    score?: number;
   }>;
 }
 
@@ -27,6 +30,9 @@ interface ChatPanelProps {
   disabled?: boolean;
   errorMessage?: string | null;
   onClearError?: () => void;
+  title?: string;
+  subtitle?: string;
+  action?: React.ReactNode;
 }
 
 export const ChatPanel: React.FC<ChatPanelProps> = ({
@@ -38,6 +44,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   disabled = false,
   errorMessage = null,
   onClearError,
+  title = 'Assistente Virtual TOTVS RH',
+  subtitle = 'Tire dúvidas sobre holerite, férias, benefícios e normas internas',
+  action
 }) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -69,22 +78,24 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const isSendDisabled = !input.trim() || isOverLimit || disabled || isTyping;
 
   return (
-    <div className="flex flex-col h-full bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-      {/* Header / Info bar */}
-      <div className="px-5 py-3.5 bg-muted/40 border-b border-border flex items-center justify-between">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
-            <Bot className="w-5 h-5 text-primary" />
+    <div className="flex flex-col h-full bg-card rounded-xl border border-border shadow-sm overflow-hidden min-h-0">
+      {/* Header / Info bar compacto e responsivo */}
+      <div className="px-3.5 py-2.5 sm:px-5 sm:py-3 bg-muted/40 border-b border-border flex items-center justify-between gap-3 shrink-0">
+        <div className="flex items-center space-x-2.5 min-w-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold shrink-0">
+            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">Assistente Virtual TOTVS RH</h3>
-            <p className="text-xs text-muted-foreground">Tire dúvidas sobre holerite, férias, benefícios e normas internas</p>
+          <div className="min-w-0">
+            <h3 className="text-xs sm:text-sm font-semibold text-foreground truncate">{title}</h3>
+            <p className="text-[11px] sm:text-xs text-muted-foreground truncate">{subtitle}</p>
           </div>
         </div>
+
+        {action && <div className="shrink-0">{action}</div>}
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4 min-h-0">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6 text-muted-foreground">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
@@ -138,7 +149,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
                   {/* Bubble */}
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                    className={`max-w-[92%] sm:max-w-[80%] break-words rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm shadow-sm ${
                       isUser
                         ? 'bg-primary text-primary-foreground rounded-tr-none'
                         : 'bg-muted/70 text-foreground border border-border rounded-tl-none'
@@ -167,17 +178,38 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                       <div className="mt-3 pt-2.5 border-t border-border/60 space-y-1.5">
                         <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
                           <FileText className="w-3.5 h-3.5 text-blue-600" />
-                          <span>Fontes citadas:</span>
+                          <span>Fontes citadas ({msg.sources.length}):</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
-                          {msg.sources.map((src, i) => (
-                            <Badge key={i} variant="neutral" className="text-[11px] font-normal bg-background/80 border border-slate-200">
-                              <span className="font-semibold text-slate-800">{src.title}</span>
-                              {src.version && <span className="text-slate-500 ml-1">({src.version})</span>}
-                              {src.section && <span className="text-slate-600 ml-1">• {src.section}</span>}
-                              {src.publishedAt && <span className="text-slate-400 ml-1">• Publicado em: {src.publishedAt}</span>}
-                            </Badge>
-                          ))}
+                          {msg.sources.map((src, i) => {
+                            const isInternal = src.docType === 'politica_interna';
+                            return (
+                              <div
+                                key={i}
+                                className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] bg-background/90 border border-slate-200 shadow-2xs"
+                              >
+                                <span
+                                  className={`text-[9px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${
+                                    isInternal
+                                      ? 'bg-blue-100 text-blue-700'
+                                      : 'bg-emerald-100 text-emerald-700'
+                                  }`}
+                                >
+                                  {isInternal ? 'Política interna' : 'Fonte oficial'}
+                                </span>
+                                <span className="font-semibold text-slate-800">{src.title}</span>
+                                {src.version && (
+                                  <span className="text-slate-500">v{src.version}</span>
+                                )}
+                                {src.section && (
+                                  <span className="text-slate-600">• {src.section}</span>
+                                )}
+                                {src.page && (
+                                  <span className="text-slate-500">• pág. {src.page}</span>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -237,14 +269,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Suggested Questions Pill bar when conversation has messages */}
       {messages.length > 0 && suggestions.length > 0 && !isTyping && (
-        <div className="px-4 py-2 border-t border-border/50 bg-muted/20 flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="text-muted-foreground font-medium flex-shrink-0">Sugestões:</span>
+        <div className="px-3 py-1.5 border-t border-border/50 bg-muted/20 flex items-center gap-1.5 overflow-x-auto scrollbar-none text-xs shrink-0">
+          <span className="text-[10px] sm:text-xs text-muted-foreground font-medium shrink-0">Sugestões:</span>
           {suggestions.map((sug, i) => (
             <button
               key={i}
               type="button"
               onClick={() => onSelectSuggestion ? onSelectSuggestion(sug) : onSendMessage(sug)}
-              className="flex-shrink-0 px-2.5 py-1 rounded-full border border-border bg-background hover:bg-muted text-foreground transition-colors"
+              className="shrink-0 px-2.5 py-0.5 rounded-full border border-border bg-background hover:bg-muted text-foreground transition-colors text-[11px] whitespace-nowrap"
             >
               {sug}
             </button>
@@ -252,34 +284,35 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       )}
 
-      {/* Input Area */}
-      <div className="p-4 border-t border-border bg-background">
-        <div className="relative">
+      {/* Input Area Compacta */}
+      <div className="p-2.5 sm:p-3.5 border-t border-border bg-background shrink-0">
+        <div className="relative flex items-center">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={disabled || isTyping}
-            placeholder="Digite sua dúvida sobre RH (Pressione Enter para enviar)..."
-            rows={2}
-            className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 pr-24 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Digite sua dúvida sobre RH..."
+            rows={1}
+            className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 pr-20 sm:pr-24 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input disabled:cursor-not-allowed disabled:opacity-50 min-h-[42px] max-h-24 leading-normal"
           />
-          <div className="absolute right-2 bottom-2.5 flex items-center gap-2">
+          <div className="absolute right-2 bottom-1.5 sm:bottom-2 flex items-center gap-1.5">
             <span
-              className={`text-xs ${
+              className={`text-[10px] sm:text-xs ${
                 isOverLimit ? 'text-destructive font-semibold' : 'text-muted-foreground'
               }`}
             >
-              {input.length}/1000
+              {input.length > 700 ? `${input.length}/1000` : ''}
             </span>
             <Button
               type="button"
               size="sm"
               disabled={isSendDisabled}
               onClick={handleSend}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 sm:h-8 sm:w-8 p-0 min-h-[32px] min-w-[32px] flex items-center justify-center shrink-0"
               title="Enviar mensagem"
+              aria-label="Enviar mensagem"
             >
               <Send className="w-4 h-4" />
             </Button>

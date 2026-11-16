@@ -1,5 +1,6 @@
 // frontend/src/pages/knowledge/KnowledgePage.tsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   Plus,
@@ -25,8 +26,10 @@ import { ChunksDrawer } from '../../features/knowledge/components/ChunksDrawer';
 import { TestQuestionPanel } from '../../features/knowledge/components/TestQuestionPanel';
 import { DocumentFiltersState, KnowledgeDocument, DocType } from '../../features/knowledge/types';
 import { DOC_TYPE_LABELS, AUDIENCE_LABELS } from '../../features/knowledge/utils';
+import { knowledgeApi } from '../../features/knowledge/api';
 
 export const KnowledgePage: React.FC = () => {
+  const navigate = useNavigate();
   const currentUser = authService.getUser();
   const userRole = currentUser?.role || 'colaborador';
   const isRh = userRole === 'rh';
@@ -81,9 +84,13 @@ export const KnowledgePage: React.FC = () => {
   };
 
   const handleNewVersion = (doc: KnowledgeDocument) => {
-    setUploadPrefillTitle(doc.title);
-    setUploadPrefillType(doc.docType);
-    setIsUploadOpen(true);
+    if (doc.sourceKind === 'texto') {
+      navigate(`/knowledge/policies/${doc.id}/edit`);
+    } else {
+      setUploadPrefillTitle(doc.title);
+      setUploadPrefillType(doc.docType);
+      setIsUploadOpen(true);
+    }
   };
 
   const handleUploadSuccess = (newDocId: number) => {
@@ -108,7 +115,27 @@ export const KnowledgePage: React.FC = () => {
   };
 
   const handleNewPolicy = () => {
-    showToast('O editor de criação de políticas em Markdown será aberto na Fase C.');
+    navigate('/knowledge/policies/new');
+  };
+
+  const handleArchiveToggle = async (doc: KnowledgeDocument) => {
+    const actionText = doc.isArchived ? 'desarquivar' : 'arquivar';
+    const confirmed = window.confirm(
+      `Deseja realmente ${actionText} o documento "${doc.title}"?`
+    );
+    if (!confirmed) return;
+
+    try {
+      await knowledgeApi.patchDocument(doc.id, { isArchived: !doc.isArchived });
+      refetch();
+      showToast(`Documento ${doc.isArchived ? 'desarquivado' : 'arquivado'} com sucesso!`);
+    } catch (err: any) {
+      showToast(
+        err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          `Erro ao ${actionText} documento.`
+      );
+    }
   };
 
   return (
@@ -340,9 +367,7 @@ export const KnowledgePage: React.FC = () => {
               onViewChunks={handleViewChunks}
               onTestQuestion={handleTestQuestion}
               onNewVersion={handleNewVersion}
-              onArchiveToggle={() =>
-                showToast(`A ação de arquivar documento será disponibilizada na Fase C.`)
-              }
+              onArchiveToggle={handleArchiveToggle}
               onRetryUpload={() => handleNewVersion(doc)}
             />
           ))}
@@ -357,6 +382,21 @@ export const KnowledgePage: React.FC = () => {
         existingDocuments={documents}
         prefilledTitle={uploadPrefillTitle}
         prefilledType={uploadPrefillType}
+      />
+
+      {/* Painel lateral de Chunks (Ver trechos) */}
+      <ChunksDrawer
+        document={chunksDoc}
+        isOpen={isChunksOpen}
+        onClose={() => setIsChunksOpen(false)}
+        onReindex={() => refetch()}
+      />
+
+      {/* Painel de Testar Pergunta na IA */}
+      <TestQuestionPanel
+        isOpen={isTestOpen}
+        onClose={() => setIsTestOpen(false)}
+        initialDocument={testDoc}
       />
     </div>
   );

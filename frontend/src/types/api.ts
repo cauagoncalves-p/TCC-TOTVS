@@ -24,6 +24,14 @@ export interface ChatResponse {
   sessionId: string;
   reply: string;
   toolUsed?: string | null;
+  sources?: Array<{
+    title: string;
+    docType?: string;
+    version?: string;
+    section?: string;
+    page?: number | null;
+    publishedAt?: string;
+  }>;
 }
 
 export interface ChatSessionMessageResponse {

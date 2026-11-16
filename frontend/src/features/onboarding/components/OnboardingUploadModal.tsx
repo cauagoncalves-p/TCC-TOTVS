@@ -71,7 +71,7 @@ export const OnboardingUploadModal: React.FC<OnboardingUploadModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4">
           <FileDropzone
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
@@ -86,7 +86,7 @@ export const OnboardingUploadModal: React.FC<OnboardingUploadModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-end gap-2.5">
+        <div className="px-4 sm:px-6 py-3 sm:py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-end gap-2.5 flex-wrap">
           <Button
             type="button"
             variant="outline"
