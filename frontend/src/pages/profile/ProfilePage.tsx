@@ -29,7 +29,7 @@ export const ProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl space-y-6">
         <PageHeader title="Meu Perfil" subtitle="Informações cadastrais e funcionais" />
         <Card>
           <CardHeader>
@@ -54,7 +54,7 @@ export const ProfilePage: React.FC = () => {
 
   if (isError || !profile) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl space-y-6">
         <PageHeader title="Meu Perfil" subtitle="Informações cadastrais e funcionais" />
         <ErrorState
           title="Não foi possível carregar seu perfil"
@@ -68,7 +68,7 @@ export const ProfilePage: React.FC = () => {
   const tenure = calculateTenure(profile.HireDate);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl space-y-6">
       <PageHeader
         title="Meu Perfil"
         subtitle="Consulte suas informações contratuais e dados funcionais registrados no TOTVS RH"

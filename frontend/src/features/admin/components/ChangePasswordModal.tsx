@@ -87,7 +87,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="change-password-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div className="relative w-full max-w-md bg-app-surface rounded-2xl shadow-2xl border border-app-border p-6 space-y-5">
         <button

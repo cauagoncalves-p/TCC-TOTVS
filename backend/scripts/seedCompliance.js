@@ -1,4 +1,9 @@
 // backend/scripts/seedCompliance.js
+/**
+ * [OBSOLETO - PARTE 8B]
+ * Este script foi substituído pelos scripts SQL database/S00_reset.sql a S06_conhecimento.sql.
+ * NÃO EXECUTE este script para evitar sobrescrever a massa coerente do seed mestre.
+ */
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: true });
 const bcrypt = require('bcryptjs');

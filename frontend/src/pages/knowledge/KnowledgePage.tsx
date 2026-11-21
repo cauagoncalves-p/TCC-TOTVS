@@ -142,7 +142,7 @@ export const KnowledgePage: React.FC = () => {
     <div className="space-y-6">
       {/* Toast flutuante de notificação */}
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-xl border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-5 right-5 z-[var(--z-toast)] bg-slate-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-xl border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
           <Sparkles className="w-4 h-4 text-brand-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>

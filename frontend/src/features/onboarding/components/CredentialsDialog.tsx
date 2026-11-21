@@ -34,7 +34,7 @@ export const CredentialsDialog: React.FC<CredentialsDialogProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="credentials-dialog-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200"
     >
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-5">
         {/* Header */}

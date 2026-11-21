@@ -67,7 +67,7 @@ export const OnboardingListPage: React.FC = () => {
   const rejectedCount = rawCases.filter((c) => c.Status === 'rejeitado').length;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* PageHeader com os 2 botões principais lado a lado */}
       <PageHeader
         title="Onboarding e Admissão"

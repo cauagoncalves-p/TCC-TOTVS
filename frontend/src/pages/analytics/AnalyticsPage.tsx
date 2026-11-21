@@ -5,7 +5,9 @@ import {
   UserX,
   AlertTriangle,
   BrainCircuit,
-  BarChart3
+  BarChart3,
+  Users,
+  ShieldCheck
 } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { DisclaimerBanner } from '../../components/ui/DisclaimerBanner';
@@ -30,10 +32,21 @@ import { IndicatorsTimeseriesChart } from '../../features/analytics/components/I
 import { DepartmentComparisonChart } from '../../features/analytics/components/DepartmentComparisonChart';
 import { HotspotRankingChart } from '../../features/analytics/components/HotspotRankingChart';
 import { AlertsCenter } from '../../features/analytics/components/AlertsCenter';
+import { RetentionEmployeesTab } from '../../features/retention/components/RetentionEmployeesTab';
+import { cn } from '../../lib/utils';
 
-export const AnalyticsPage: React.FC = () => {
+interface AnalyticsPageProps {
+  initialTab?: 'geral' | 'colaboradores';
+}
+
+export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ initialTab = 'geral' }) => {
   const user = authService.getUser();
   const isRh = user?.role === 'rh';
+
+  // Se não for RH, a aba de colaboradores é estritamente inacessível
+  const [activeTab, setActiveTab] = useState<'geral' | 'colaboradores'>(
+    isRh && initialTab === 'colaboradores' ? 'colaboradores' : 'geral'
+  );
 
   const [filters, setFilters] = useState<AnalyticsFilters>(defaultFilters());
 
@@ -97,160 +110,207 @@ export const AnalyticsPage: React.FC = () => {
       {/* Header */}
       <PageHeader
         title="Inteligência Preditiva"
-        subtitle="Painel estratégico de absenteísmo, horas extras, turnover e alertas de risco."
+        subtitle="Painel estratégico de absenteísmo, horas extras, turnover e índice de atenção para retenção."
       />
 
-      {/* Aviso Obrigatório */}
-      <DisclaimerBanner type="analytics" />
+      {/* Navegação de Abas (Aba Colaboradores visível exclusivamente para RH) */}
+      {isRh && (
+        <div className="flex border-b border-slate-200 gap-2 overflow-x-auto pb-px" role="tablist" aria-label="Abas de Inteligência">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'geral'}
+            onClick={() => setActiveTab('geral')}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 -mb-px whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-500',
+              activeTab === 'geral'
+                ? 'border-brand-500 text-brand-700 bg-brand-50/50'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            )}
+          >
+            <BarChart3 className="w-4 h-4" aria-hidden="true" />
+            <span>Visão Geral e Alertas</span>
+          </button>
 
-      {/* Barra de Filtros */}
-      <AnalyticsFilterBar
-        departments={departments}
-        filters={filters}
-        onChange={setFilters}
-      />
-
-      {/* Cards de Métricas Principais */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {loadingSummary ? (
-          <>
-            <Skeleton className="h-28 rounded-xl" />
-            <Skeleton className="h-28 rounded-xl" />
-            <Skeleton className="h-28 rounded-xl" />
-            <Skeleton className="h-28 rounded-xl" />
-          </>
-        ) : (
-          <>
-            <StatCard
-              title="Taxa de Absenteísmo"
-              value={cards ? `${cards.absenceRate.value.toFixed(1)}%` : '0%'}
-              delta={cards?.absenceRate.delta}
-              deltaLabel="vs. período anterior"
-              icon={<TrendingDown className="w-5 h-5 text-blue-600" />}
-            />
-            <StatCard
-              title="Horas Extras / Colaborador"
-              value={cards ? `${cards.overtimePerEmployee.value.toFixed(1)}h` : '0h'}
-              delta={cards?.overtimePerEmployee.delta}
-              deltaLabel="vs. período anterior"
-              icon={<Clock className="w-5 h-5 text-amber-600" />}
-            />
-            <StatCard
-              title="Taxa de Turnover"
-              value={cards ? `${cards.turnoverRate.value.toFixed(1)}%` : '0%'}
-              delta={cards?.turnoverRate.delta}
-              deltaLabel="vs. período anterior"
-              icon={<UserX className="w-5 h-5 text-rose-600" />}
-            />
-            <StatCard
-              title="Alertas Ativos"
-              value={cards ? cards.activeAlerts.value : 0}
-              delta={cards?.activeAlerts.delta}
-              deltaLabel="novos alertas"
-              icon={<AlertTriangle className="w-5 h-5 text-purple-600" />}
-            />
-          </>
-        )}
-      </div>
-
-      {/* Gráfico 1: Evolução Histórica dos Indicadores */}
-      <Card className="p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-slate-800">
-              Evolução Temporal dos Indicadores
-            </h3>
-            <p className="text-xs text-slate-500">
-              Absenteísmo (%), Horas Extras (h/colab) e Turnover (%) ao longo dos meses.
-            </p>
-          </div>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'colaboradores'}
+            onClick={() => setActiveTab('colaboradores')}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 -mb-px whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-500',
+              activeTab === 'colaboradores'
+                ? 'border-brand-500 text-brand-700 bg-brand-50/50'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            )}
+          >
+            <Users className="w-4 h-4 text-brand-600" aria-hidden="true" />
+            <span>Colaboradores (Índice de Atenção)</span>
+            <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wide">
+              RH
+            </span>
+          </button>
         </div>
-        {loadingTs ? (
-          <Skeleton className="h-64 w-full rounded-lg" />
-        ) : (
-          <IndicatorsTimeseriesChart data={tsData?.timeseries || []} />
-        )}
-      </Card>
+      )}
 
-      {/* Grid: Comparativo por Departamento & Ranking de Hotspots */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico 2: Comparativo Departamentos */}
-        <Card className="p-5 space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold text-slate-800">
-              Comparativo por Departamento
-            </h3>
-            <p className="text-xs text-slate-500">
-              Distribuição dos indicadores no mês de referência ({deptCompData?.month || '-'}).
-            </p>
-          </div>
-          {loadingDeptComp ? (
-            <Skeleton className="h-64 w-full rounded-lg" />
-          ) : (
-            <DepartmentComparisonChart data={deptCompData?.departments || []} />
-          )}
-        </Card>
+      {/* Conteúdo da Aba Ativa */}
+      {isRh && activeTab === 'colaboradores' ? (
+        <RetentionEmployeesTab />
+      ) : (
+        <>
+          {/* Aviso Obrigatório */}
+          <DisclaimerBanner type="analytics" />
 
-        {/* Gráfico 3: Ranking de Risco (Hotspots) */}
-        <Card className="p-5 space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold text-slate-800">
-              Concentração de Risco por Departamento (Hotspots)
-            </h3>
-            <p className="text-xs text-slate-500">
-              Score ponderado de 0 a 10 calculado com base em alertas ativos e severidade.
-            </p>
-          </div>
-          {loadingHotspots ? (
-            <Skeleton className="h-64 w-full rounded-lg" />
-          ) : (
-            <HotspotRankingChart data={hotspotData?.hotspots || []} />
-          )}
-        </Card>
-      </div>
+          {/* Barra de Filtros */}
+          <AnalyticsFilterBar
+            departments={departments}
+            filters={filters}
+            onChange={setFilters}
+          />
 
-      {/* Central de Alertas */}
-      <Card className="p-5 space-y-4">
-        <div>
-          <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-purple-600" />
-            Central de Alertas Preditivos
-          </h3>
-          <p className="text-xs text-slate-500">
-            Detecção antecipada de anomalias e recomendações operacionais preventivas.
-          </p>
-        </div>
-        <AlertsCenter
-          alerts={alertsData?.alerts || []}
-          departments={departments}
-          isLoading={loadingAlerts}
-          isRh={isRh}
-        />
-      </Card>
+          {/* Cards de Métricas Principais */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {loadingSummary ? (
+              <>
+                <Skeleton className="h-28 rounded-xl" />
+                <Skeleton className="h-28 rounded-xl" />
+                <Skeleton className="h-28 rounded-xl" />
+                <Skeleton className="h-28 rounded-xl" />
+              </>
+            ) : (
+              <>
+                <StatCard
+                  title="Taxa de Absenteísmo"
+                  value={cards ? `${cards.absenceRate.value.toFixed(1)}%` : '0%'}
+                  delta={cards?.absenceRate.delta}
+                  deltaLabel="vs. período anterior"
+                  icon={<TrendingDown className="w-5 h-5 text-blue-600" />}
+                />
+                <StatCard
+                  title="Horas Extras / Colaborador"
+                  value={cards ? `${cards.overtimePerEmployee.value.toFixed(1)}h` : '0h'}
+                  delta={cards?.overtimePerEmployee.delta}
+                  deltaLabel="vs. período anterior"
+                  icon={<Clock className="w-5 h-5 text-amber-600" />}
+                />
+                <StatCard
+                  title="Taxa de Turnover"
+                  value={cards ? `${cards.turnoverRate.value.toFixed(1)}%` : '0%'}
+                  delta={cards?.turnoverRate.delta}
+                  deltaLabel="vs. período anterior"
+                  icon={<UserX className="w-5 h-5 text-rose-600" />}
+                />
+                <StatCard
+                  title="Alertas Ativos"
+                  value={cards ? cards.activeAlerts.value : 0}
+                  delta={cards?.activeAlerts.delta}
+                  deltaLabel="novos alertas"
+                  icon={<AlertTriangle className="w-5 h-5 text-purple-600" />}
+                />
+              </>
+            )}
+          </div>
 
-      {/* Previsões (Fase B) com fallback graceful */}
-      <Card className="p-5 space-y-3 bg-gradient-to-r from-slate-50 to-indigo-50/30 border-indigo-100">
-        <div className="flex items-center gap-2">
-          <BrainCircuit className="w-4 h-4 text-indigo-600" />
-          <h3 className="text-sm font-semibold text-indigo-900">
-            Projeções Preditivas com Machine Learning (Fase B)
-          </h3>
-        </div>
-        {loadingPredictions ? (
-          <Skeleton className="h-16 w-full rounded-lg" />
-        ) : errorPredictions || !predictionsData ? (
-          <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-lg text-xs text-amber-900">
-            <p className="font-medium mb-0.5">Modelo preditivo em calibração ou indisponível no momento.</p>
-            <p className="text-amber-700">
-              O microserviço preditivo (Fase B) opera em regime assíncrono. O monitoramento histórico e as regras estatísticas permanecem plenamente operacionais acima.
-            </p>
+          {/* Gráfico 1: Evolução Histórica dos Indicadores */}
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">
+                  Evolução Temporal dos Indicadores
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Absenteísmo (%), Horas Extras (h/colab) e Turnover (%) ao longo dos meses.
+                </p>
+              </div>
+            </div>
+            {loadingTs ? (
+              <Skeleton className="h-64 w-full rounded-lg" />
+            ) : (
+              <IndicatorsTimeseriesChart data={tsData?.timeseries || []} />
+            )}
+          </Card>
+
+          {/* Grid: Comparativo por Departamento & Ranking de Hotspots */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Gráfico 2: Comparativo Departamentos */}
+            <Card className="p-5 space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">
+                  Comparativo por Departamento
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Distribuição dos indicadores no mês de referência ({deptCompData?.month || '-'}).
+                </p>
+              </div>
+              {loadingDeptComp ? (
+                <Skeleton className="h-64 w-full rounded-lg" />
+              ) : (
+                <DepartmentComparisonChart data={deptCompData?.departments || []} />
+              )}
+            </Card>
+
+            {/* Gráfico 3: Ranking de Risco (Hotspots) */}
+            <Card className="p-5 space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">
+                  Concentração de Risco por Departamento (Hotspots)
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Score ponderado de 0 a 10 calculado com base em alertas ativos e severidade.
+                </p>
+              </div>
+              {loadingHotspots ? (
+                <Skeleton className="h-64 w-full rounded-lg" />
+              ) : (
+                <HotspotRankingChart data={hotspotData?.hotspots || []} />
+              )}
+            </Card>
           </div>
-        ) : (
-          <div className="text-xs text-slate-600">
-            {JSON.stringify(predictionsData)}
-          </div>
-        )}
-      </Card>
+
+          {/* Central de Alertas */}
+          <Card className="p-5 space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-purple-600" />
+                Central de Alertas Preditivos
+              </h3>
+              <p className="text-xs text-slate-500">
+                Detecção antecipada de anomalias e recomendações operacionais preventivas.
+              </p>
+            </div>
+            <AlertsCenter
+              alerts={alertsData?.alerts || []}
+              departments={departments}
+              isLoading={loadingAlerts}
+              isRh={isRh}
+            />
+          </Card>
+
+          {/* Previsões (Fase B) com fallback graceful */}
+          <Card className="p-5 space-y-3 bg-gradient-to-r from-slate-50 to-indigo-50/30 border-indigo-100">
+            <div className="flex items-center gap-2">
+              <BrainCircuit className="w-4 h-4 text-indigo-600" />
+              <h3 className="text-sm font-semibold text-indigo-900">
+                Projeções Preditivas com Machine Learning (Fase B)
+              </h3>
+            </div>
+            {loadingPredictions ? (
+              <Skeleton className="h-16 w-full rounded-lg" />
+            ) : errorPredictions || !predictionsData ? (
+              <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-lg text-xs text-amber-900">
+                <p className="font-medium mb-0.5">Modelo preditivo em calibração ou indisponível no momento.</p>
+                <p className="text-amber-700">
+                  O microserviço preditivo (Fase B) opera em regime assíncrono. O monitoramento histórico e as regras estatísticas permanecem plenamente operacionais acima.
+                </p>
+              </div>
+            ) : (
+              <div className="text-xs text-slate-600">
+                {JSON.stringify(predictionsData)}
+              </div>
+            )}
+          </Card>
+        </>
+      )}
     </div>
   );
 };

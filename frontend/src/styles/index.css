@@ -4,21 +4,275 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: var(--font-family);
-  background-color: var(--bg-app);
-  color: var(--text-primary);
+/* ─── Transições suaves globais de tema ─── */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body,
+  .app-shell,
+  .main-column,
+  .page-content,
+  header,
+  aside,
+  nav,
+  button:not(.no-theme-transition),
+  .bg-app,
+  .bg-surface,
+  .bg-white,
+  .bg-slate-50,
+  .bg-slate-100 {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
-/* Ajustes de acessibilidade, z-index e posicionamento seguro para o widget do VLibras */
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ─── Gutter responsivo ─── */
+@media (min-width: 640px) {
+  :root { --page-gutter: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  :root { --page-gutter: 2rem; }
+}
+
+/* ─── AppShell: grid com colunas fixas ─── */
+/* Mobile: 1 coluna (menu é drawer overlay, não ocupa espaço) */
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100dvh;
+  background-color: var(--bg-primary);
+}
+
+/* Desktop ≥ 1024 px: sidebar fixa à esquerda */
+@media (min-width: 1024px) {
+  .app-shell {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+}
+
+/* ─── Coluna principal (topbar + conteúdo) ─── */
+.main-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+}
+
+/* ─── Área de página ─── */
+.page-area {
+  flex: 1;
+  overflow-x: hidden;
+}
+
+/* ─── Contêiner de conteúdo ─── */
+.page-content {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+  padding-block: var(--page-gutter);
+  width: 100%;
+}
+
+/* ─── Grade de cartões responsiva ─── */
+.cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+/* ─── Utilitário: tabelas com rolagem interna ─── */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Sem scrollbar horizontal visível no body ─── */
+html, body {
+  max-width: 100vw;
+}
+
+/* ─── Ajustes de acessibilidade e posicionamento do VLibras ─── */
 div[vw] {
-  z-index: 40 !important;
+  z-index: var(--z-vlibras) !important;
 }
 
 div[vw] [vw-access-button] {
-  z-index: 40 !important;
+  z-index: var(--z-vlibras) !important;
 }
 
 div[vw] [vw-plugin-wrapper] {
-  z-index: 40 !important;
+  z-index: var(--z-vlibras) !important;
+}
+
+/* ─── VLibras ativo: adiciona folga à direita do conteúdo em telas < 1536 px ─── */
+@media (max-width: 1535px) {
+  html.vlibras-on .page-content {
+    padding-right: calc(var(--page-gutter) + var(--vlibras-gutter));
+  }
+}
+
+/* ─── Ocultar scrollbar horizontal (utilitário) ─── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── Respeitar prefers-reduced-motion nas animações ─── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in { animation: none !important; }
+  .transition-all, .transition-colors, .transition-transform { transition: none !important; }
+}
+
+/* ==========================================================================
+   ESTILOS DE SUPERFÍCIE E CONTRASTE PARA O MODO ESCURO (.dark)
+   Padrão Sistema / Android / Material 3 Dark:
+   - Fundo principal:          #131314  (bg-primary)
+   - Superfícies / Cards:      #1E1F20  (bg-surface)
+   - Elevados / Modais:        #28292A  (bg-elevated)
+   - Hover / Seleções:         #2C2D2E  (bg-subtle)
+   - Bordas sutis:             #333537  (border-subtle)
+   - Texto primário:           #F2F4FA  (text-primary)   - WCAG AAA 15.1:1
+   - Texto secundário:         #A0A4AB  (text-secondary) - WCAG AA 6.2:1
+   ========================================================================== */
+
+.dark body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Superfícies principais (Cards, Tabelas, Modais) */
+.dark .bg-white {
+  background-color: var(--bg-surface) !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-50\/80,
+.dark .bg-slate-50\/70,
+.dark .bg-slate-50\/60,
+.dark .bg-slate-50\/50 {
+  background-color: #18191A !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: var(--bg-elevated) !important;
+}
+
+.dark .bg-slate-200\/50,
+.dark .bg-slate-200\/70 {
+  background-color: var(--bg-subtle) !important;
+}
+
+/* Bordas e divisores com padrão sistema (#333537) */
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
+.dark .border-slate-200\/70,
+.dark .border-slate-200\/60,
+.dark .border-slate-100 {
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--border-subtle) !important;
+}
+
+/* Tipografia em Modo Escuro - WCAG AA/AAA */
+.dark .text-slate-900 {
+  color: var(--text-primary) !important;    /* #F2F4FA */
+}
+.dark .text-slate-800 {
+  color: #E4E7ED !important;
+}
+.dark .text-slate-700 {
+  color: #C5CAD3 !important;
+}
+.dark .text-slate-600 {
+  color: var(--text-secondary) !important;  /* #A0A4AB */
+}
+.dark .text-slate-500 {
+  color: var(--text-muted) !important;      /* #6E737D */
+}
+.dark .text-slate-400 {
+  color: #5F6368 !important;
+}
+
+/* Hovers interativos */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-slate-200\/50:hover,
+.dark .hover\:bg-slate-200\/70:hover {
+  background-color: var(--bg-subtle) !important;
+}
+
+.dark tr.hover\:bg-brand-50\/30:hover {
+  background-color: rgba(138, 82, 250, 0.10) !important;
+}
+
+/* Controles de Formulário */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 0 2px rgba(22, 197, 228, 0.20) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Destaques Roxo & Ciano em Modo Escuro */
+.dark .bg-brand-50,
+.dark .bg-brand-50\/50,
+.dark .bg-brand-50\/60 {
+  background-color: rgba(138, 82, 250, 0.12) !important;
+}
+
+.dark .text-brand-600,
+.dark .text-brand-700 {
+  color: var(--accent-primary) !important;
+}
+
+.dark .border-brand-200,
+.dark .border-brand-200\/60 {
+  border-color: rgba(138, 82, 250, 0.25) !important;
+}
+
+/* Menus e Navegação no Dark Mode */
+.dark header,
+.dark aside {
+  background-color: var(--bg-nav) !important;
+  border-color: var(--border-nav) !important;
+}
+
+/* Amber / warning areas no dark */
+.dark .bg-amber-50,
+.dark .bg-amber-50\/90 {
+  background-color: rgba(245, 158, 11, 0.10) !important;
+}
+.dark .border-amber-200,
+.dark .border-amber-200\/80 {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+.dark .text-amber-900,
+.dark .text-amber-950 {
+  color: #FCD34D !important;
 }

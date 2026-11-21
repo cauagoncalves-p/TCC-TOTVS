@@ -1,8 +1,8 @@
 // backend/scripts/seedAnalytics.js
 /**
- * Script de Seed para o Módulo de Analytics / Inteligência Preditiva (Parte 3)
- * Gera 24 meses de métricas com dados agregados por departamento e mês.
- * Idempotente e com semente pseudoaleatória fixa para resultados 100% reproduzíveis.
+ * [OBSOLETO - PARTE 8B]
+ * Este script foi substituído pelos scripts SQL database/S00_reset.sql a S06_conhecimento.sql.
+ * NÃO EXECUTE este script para evitar sobrescrever a massa coerente do seed mestre.
  */
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: true });

@@ -2,6 +2,20 @@
 const complianceLimits = require('../config/complianceLimits');
 
 /**
+ * Converte com segurança Date ou string para YYYY-MM-DD
+ */
+function toDateStr(d) {
+  if (!d) return null;
+  if (d instanceof Date) {
+    const yr = d.getUTCFullYear();
+    const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const da = String(d.getUTCDate()).padStart(2, '0');
+    return `${yr}-${mo}-${da}`;
+  }
+  return String(d).split('T')[0];
+}
+
+/**
  * Validador de dígitos verificadores de CPF
  */
 function isValidCpfDigits(cpf) {
@@ -120,10 +134,10 @@ function validateEmpDupPerson(allEmployees) {
 // 4. EMP_DATES_ORDER
 function validateEmpDatesOrder(emp) {
   if (!emp.HireDate) return null;
-  const hireStr = String(emp.HireDate).split('T')[0];
+  const hireStr = toDateStr(emp.HireDate);
 
   if (emp.TerminationDate) {
-    const termStr = String(emp.TerminationDate).split('T')[0];
+    const termStr = toDateStr(emp.TerminationDate);
     if (termStr < hireStr) {
       return {
         ruleCode: 'EMP_DATES_ORDER',
@@ -258,8 +272,8 @@ function validateVacOver(vac) {
 // 9. LEAVE_DATES
 function validateLeaveDates(leave) {
   if (leave.StartDate && leave.EndDate) {
-    const startStr = String(leave.StartDate).split('T')[0];
-    const endStr = String(leave.EndDate).split('T')[0];
+    const startStr = toDateStr(leave.StartDate);
+    const endStr = toDateStr(leave.EndDate);
     if (endStr < startStr) {
       return {
         ruleCode: 'LEAVE_DATES',
@@ -283,10 +297,10 @@ function validateLeaveOverlap(leaves) {
     for (let j = i + 1; j < leaves.length; j++) {
       const l1 = leaves[i];
       const l2 = leaves[j];
-      const s1 = String(l1.StartDate).split('T')[0];
-      const e1 = l1.EndDate ? String(l1.EndDate).split('T')[0] : '9999-12-31';
-      const s2 = String(l2.StartDate).split('T')[0];
-      const e2 = l2.EndDate ? String(l2.EndDate).split('T')[0] : '9999-12-31';
+      const s1 = toDateStr(l1.StartDate);
+      const e1 = l1.EndDate ? toDateStr(l1.EndDate) : '9999-12-31';
+      const s2 = toDateStr(l2.StartDate);
+      const e2 = l2.EndDate ? toDateStr(l2.EndDate) : '9999-12-31';
 
       // Checa sobreposição de intervalos: (s1 <= e2 && s2 <= e1)
       if (s1 <= e2 && s2 <= e1) {
@@ -359,7 +373,7 @@ function validateEsocialS2200(emp) {
 
   if (problems.length > 0) {
     return {
-      ruleCode: 'ESOCIAL_S2200',
+      ruleCode: 'ESOCIAL_S2200_CHECKLIST',
       eventCode: 'S-2200',
       entityType: 'employee',
       entityId: emp.Id,
@@ -377,14 +391,14 @@ function validateEsocialS2230(leave, emp) {
   if (!leave.LeaveType) problems.push('Tipo de afastamento ausente');
   if (!leave.StartDate) problems.push('Data de início ausente');
   if (leave.StartDate && leave.EndDate) {
-    const s = String(leave.StartDate).split('T')[0];
-    const e = String(leave.EndDate).split('T')[0];
+    const s = toDateStr(leave.StartDate);
+    const e = toDateStr(leave.EndDate);
     if (e < s) problems.push(`Data final (${e}) anterior à data inicial (${s})`);
   }
 
   if (problems.length > 0) {
     return {
-      ruleCode: 'ESOCIAL_S2230',
+      ruleCode: 'ESOCIAL_S2230_CHECKLIST',
       eventCode: 'S-2230',
       entityType: 'leave',
       entityId: leave.Id,
@@ -402,8 +416,8 @@ function validateEsocialS2299(emp) {
   if (!emp.TerminationDate) {
     problems.push('Data de desligamento não preenchida');
   } else if (emp.HireDate) {
-    const sTerm = String(emp.TerminationDate).split('T')[0];
-    const sHire = String(emp.HireDate).split('T')[0];
+    const sTerm = toDateStr(emp.TerminationDate);
+    const sHire = toDateStr(emp.HireDate);
     if (sTerm < sHire) {
       problems.push(`Data de desligamento (${sTerm}) anterior à admissão (${sHire})`);
     }
@@ -411,7 +425,7 @@ function validateEsocialS2299(emp) {
 
   if (problems.length > 0) {
     return {
-      ruleCode: 'ESOCIAL_S2299',
+      ruleCode: 'ESOCIAL_S2299_CHECKLIST',
       eventCode: 'S-2299',
       entityType: 'employee',
       entityId: emp.Id,

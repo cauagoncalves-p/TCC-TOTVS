@@ -300,7 +300,7 @@ export const ComplianceIssuesTab: React.FC<ComplianceIssuesTabProps> = ({
 
       {/* Painel Lateral / Modal com Descrição do Caso, Regra, Fonte, Orientação e Ações */}
       {selectedIssue && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-150">
           <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
             {/* Header Modal */}
             <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">

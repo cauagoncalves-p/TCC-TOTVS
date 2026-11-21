@@ -726,3 +726,288 @@
     "chunks": [ ... ]
   }
   ```
+
+
+---
+
+## 9. Módulo de Chamados do Colaborador para o RH (Parte 9 - Fase A)
+
+### `POST /api/tickets`
+- **Acesso**: Autenticado (somente `colaborador`)
+- **Body**:
+  ```json
+  {
+    "subject": "Dúvida sobre desconto de vale transporte",
+    "category": "holerite",
+    "message": "Gostaria de esclarecer o desconto de VT lançado na última competência.",
+    "sessionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  }
+  ```
+- **Validações**:
+  - `subject`: 5 a 150 caracteres (obrigatório).
+  - `category`: `ferias | holerite | beneficios | ponto | documentos | politicas | outros` (obrigatório).
+  - `message`: 10 a 2000 caracteres (obrigatório, texto puro).
+  - `sessionId`: `UUID` (opcional).
+  - Limites por colaborador: máximo 3 chamados em andamento simultâneos e máximo 5 chamados criados por dia (retorna 429 se exceder).
+- **Sucesso (201)**:
+  ```json
+  {
+    "Id": 1,
+    "RequesterUserId": 4,
+    "Subject": "Dúvida sobre desconto de vale transporte",
+    "Category": "holerite",
+    "Status": "aberto",
+    "AssignedTo": null,
+    "SessionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "CreatedAt": "2026-11-19T10:00:00.000Z",
+    "UpdatedAt": "2026-11-19T10:00:00.000Z",
+    "LastMessageAt": "2026-11-19T10:00:00.000Z",
+    "LastMessageRole": "colaborador",
+    "initialMessage": {
+      "Id": 1,
+      "TicketId": 1,
+      "AuthorUserId": 4,
+      "AuthorRole": "colaborador",
+      "Content": "Gostaria de esclarecer o desconto de VT lançado na última competência.",
+      "CreatedAt": "2026-11-19T10:00:00.000Z"
+    }
+  }
+  ```
+
+### `GET /api/tickets/mine`
+- **Acesso**: Autenticado (somente `colaborador`)
+- **Query Params**:
+  - `status`: `aberto | em_atendimento | respondido | resolvido` (opcional)
+  - `page`: `number` (padrão 1)
+  - `limit`: `number` (padrão 10)
+- **Sucesso (200)**:
+  ```json
+  {
+    "tickets": [
+      {
+        "Id": 1,
+        "RequesterUserId": 4,
+        "Subject": "Dúvida sobre desconto de vale transporte",
+        "Category": "holerite",
+        "Status": "aberto",
+        "AssignedTo": null,
+        "AssignedToName": null,
+        "CreatedAt": "2026-11-19T10:00:00.000Z",
+        "UpdatedAt": "2026-11-19T10:00:00.000Z",
+        "LastMessageAt": "2026-11-19T10:00:00.000Z",
+        "LastMessageRole": "colaborador"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 1
+  }
+  ```
+
+### `GET /api/tickets`
+- **Acesso**: Autenticado (somente `rh`)
+- **Query Params**:
+  - `status`: `aberto | em_atendimento | respondido | resolvido` (opcional)
+  - `category`: categoria válida (opcional)
+  - `assigned`: `me | none | <id>` (opcional)
+  - `q`: busca por assunto ou nome do colaborador (opcional)
+  - `page`: `number` (padrão 1)
+  - `limit`: `number` (padrão 20)
+- **Sucesso (200)**:
+  ```json
+  {
+    "tickets": [
+      {
+        "Id": 1,
+        "RequesterUserId": 4,
+        "RequesterName": "Carla Mendes Oliveira",
+        "RequesterDepartment": "Tecnologia",
+        "Subject": "Dúvida sobre desconto de vale transporte",
+        "Category": "holerite",
+        "Status": "aberto",
+        "AssignedTo": null,
+        "AssignedToName": null,
+        "CreatedAt": "2026-11-19T10:00:00.000Z",
+        "UpdatedAt": "2026-11-19T10:00:00.000Z",
+        "LastMessageAt": "2026-11-19T10:00:00.000Z",
+        "LastMessageRole": "colaborador"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 1
+  }
+  ```
+
+### `GET /api/tickets/counts`
+- **Acesso**: Autenticado (somente `rh`)
+- **Sucesso (200)**:
+  ```json
+  {
+    "openUnassigned": 1,
+    "myAssigned": 0,
+    "answered": 0,
+    "resolved": 0,
+    "total": 1
+  }
+  ```
+
+### `GET /api/tickets/:id`
+- **Acesso**: Autenticado (`colaborador` dono ou `rh`; colaborador alheio recebe 404; gestor recebe 403)
+- **Sucesso (200)**:
+  ```json
+  {
+    "id": 1,
+    "subject": "Dúvida sobre desconto de vale transporte",
+    "category": "holerite",
+    "status": "aberto",
+    "assignedTo": null,
+    "assignedToName": null,
+    "sessionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "createdAt": "2026-11-19T10:00:00.000Z",
+    "updatedAt": "2026-11-19T10:00:00.000Z",
+    "lastMessageAt": "2026-11-19T10:00:00.000Z",
+    "lastMessageRole": "colaborador",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolvedByName": null,
+    "requester": {
+      "id": 4,
+      "email": "carla.oliveira@exemplo.com",
+      "fullName": "Carla Mendes Oliveira",
+      "registration": "M0003",
+      "department": "Tecnologia",
+      "jobTitle": "Analista de Sistemas"
+    },
+    "messages": [
+      {
+        "Id": 1,
+        "TicketId": 1,
+        "AuthorUserId": 4,
+        "AuthorRole": "colaborador",
+        "Content": "Gostaria de esclarecer o desconto de VT lançado na última competência.",
+        "CreatedAt": "2026-11-19T10:00:00.000Z",
+        "AuthorName": "Carla Mendes Oliveira"
+      }
+    ]
+  }
+  ```
+
+### `POST /api/tickets/:id/messages`
+- **Acesso**: Autenticado (`colaborador` dono ou `rh`; colaborador alheio recebe 404; gestor recebe 403)
+- **Body**: `{ "content": "Texto da resposta com no mínimo 10 caracteres." }`
+- **Validações**: `content` 10 a 2000 caracteres. Se o chamado estiver resolvido há mais de 7 dias e o autor for colaborador, retorna 409.
+- **Sucesso (201)**:
+  ```json
+  {
+    "message": {
+      "Id": 2,
+      "TicketId": 1,
+      "AuthorUserId": 3,
+      "AuthorRole": "rh",
+      "Content": "Olá, verificamos o cálculo de acordo com a CLT e convenção coletiva.",
+      "CreatedAt": "2026-11-19T10:15:00.000Z"
+    },
+    "ticket": {
+      "Id": 1,
+      "Status": "respondido",
+      "AssignedTo": 3,
+      "UpdatedAt": "2026-11-19T10:15:00.000Z",
+      "LastMessageAt": "2026-11-19T10:15:00.000Z",
+      "LastMessageRole": "rh"
+    }
+  }
+  ```
+
+### `PATCH /api/tickets/:id/assign`
+- **Acesso**: Autenticado (somente `rh`)
+- **Body**: `{ "assignedTo": "me" | null }`
+- **Sucesso (200)**: Retorna o chamado atualizado com o novo `AssignedTo` e status correspondente (`em_atendimento` ao assumir chamado aberto, `aberto` ao liberar).
+
+### `PATCH /api/tickets/:id/resolve`
+- **Acesso**: Autenticado (`colaborador` dono ou `rh`; colaborador alheio recebe 404; gestor recebe 403)
+- **Sucesso (200)**: Retorna o chamado com `Status = "resolvido"`, `ResolvedAt` e `ResolvedBy`.
+
+---
+
+## 9. Acompanhamento Individual e Índice de Atenção (Parte 10 - Fase A)
+
+Todas as rotas exigem autenticação com papel `rh`. `gestor` e `colaborador` recebem **403 Forbidden**.
+**Princípios de Privacidade**: Nenhuma resposta contém salário, CPF, idade, gênero ou motivos de saúde.
+
+### `GET /api/retention/employees`
+- **Acesso**: Autenticado (somente `rh`)
+- **Query Params**:
+  - `scope` (opcional): `'company'` (padrão) | `'department'`
+  - `departmentId` (opcional): ID do departamento (quando `scope=department`)
+  - `level` (opcional): `'alta'` | `'moderada'` | `'baixa'` | `'insuficiente'` | `'nao_aplicavel'`
+  - `q` (opcional): busca por nome ou matrícula (máx. 80 caracteres)
+  - `onlySignals` (opcional): `'true'` | `'false'`
+  - `sort` (opcional): `'score_desc'` (padrão) | `'score_asc'` | `'absences_desc'` | `'overtime_desc'` | `'stagnation_desc'` | `'name_asc'`
+  - `page` (opcional, padrão 1): number
+  - `limit` (opcional, padrão 25): number
+- **Sucesso (200)**:
+  ```json
+  {
+    "employees": [
+      {
+        "id": 15,
+        "fullName": "João Carlos Silva",
+        "registration": "S0015",
+        "department": "Atendimento",
+        "departmentId": 1,
+        "jobTitle": "Atendente",
+        "contractType": "clt",
+        "tenureMonths": 24,
+        "lastMonthAbsences": 3.0,
+        "recentAbsences": 9.0,
+        "avgRecentOvertime": 18.5,
+        "monthsSinceLastMovement": 24,
+        "vacationBalanceDays": 30,
+        "score": 75,
+        "level": "alta",
+        "levelLabel": "Alta",
+        "dataQuality": "completo",
+        "signals": [
+          "Horas extras acima do setor",
+          "Faltas em alta",
+          "Sem movimentação há mais de 2 anos"
+        ],
+        "trend": "subindo",
+        "components": {
+          "sobrecarga": { "points": 35, "maxPoints": 40, "phrase": "..." },
+          "ausencias": { "points": 25, "maxPoints": 40, "phrase": "..." },
+          "estagnacao": { "points": 15, "maxPoints": 20, "phrase": "..." }
+        }
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 25,
+    "totalPages": 1,
+    "departments": [{ "Id": 1, "Name": "Atendimento" }]
+  }
+  ```
+
+### `GET /api/retention/summary`
+- **Acesso**: Autenticado (somente `rh`)
+- **Query Params**: `scope` (`company` | `department`), `departmentId`
+- **Sucesso (200)**:
+  ```json
+  {
+    "total": 120,
+    "alta": 8,
+    "moderada": 32,
+    "baixa": 65,
+    "insuficiente": 10,
+    "nao_aplicavel": 5
+  }
+  ```
+
+### `GET /api/retention/config`
+- **Acesso**: Autenticado (somente `rh`)
+- **Sucesso (200)**:
+  Retorna a configuração completa, regras, pesos, limites e avisos éticos do cálculo `regras-v1`.
+

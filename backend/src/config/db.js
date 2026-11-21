@@ -24,15 +24,45 @@ const config = {
   }
 };
 
-const poolPromise = new sql.ConnectionPool(config)
-  .connect()
-  .then(pool => {
-    console.log(`Conexão estabelecida com sucesso no banco [${config.database}] como [${config.user}]!`);
-    return pool;
-  })
-  .catch(err => {
-    console.error(`Erro ao conectar ao banco de dados [${config.database}] como [${config.user}]:`, err.message);
-    throw err;
-  });
+let poolInstance = null;
+let connectingPromise = null;
 
-module.exports = { sql, poolPromise };
+async function getPool() {
+  if (poolInstance && poolInstance.connected) {
+    return poolInstance;
+  }
+  if (connectingPromise) {
+    return connectingPromise;
+  }
+
+  connectingPromise = new sql.ConnectionPool(config)
+    .connect()
+    .then(p => {
+      console.log(`Conexão estabelecida com sucesso no banco [${config.database}] como [${config.user}]!`);
+      poolInstance = p;
+      connectingPromise = null;
+      return p;
+    })
+    .catch(err => {
+      console.error(`Erro ao conectar ao banco de dados [${config.database}] como [${config.user}]:`, err.message);
+      connectingPromise = null;
+      throw err;
+    });
+
+  return connectingPromise;
+}
+
+// Inicia tentativa de conexão sem derrubar o processo com unhandled rejection
+getPool().catch(() => {});
+
+// Objeto thenable compatível com "await poolPromise" em todos os repositories
+const poolPromise = {
+  then(onFulfilled, onRejected) {
+    return getPool().then(onFulfilled, onRejected);
+  },
+  catch(onRejected) {
+    return getPool().catch(onRejected);
+  }
+};
+
+module.exports = { sql, poolPromise, getPool };

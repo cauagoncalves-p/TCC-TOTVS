@@ -1,49 +1,185 @@
 /* frontend/src/styles/tokens.css */
-/* Tokens de Design System inspirados na identidade visual TOTVS */
+/* ==========================================================================
+   DESIGN SYSTEM TOKENS - PALETA OFICIAL & SISTEMA DARK
+   - Azul-marinho: #09132F (Segurança, confiança e estabilidade)
+   - Roxo:         #7139DC (Criatividade, inteligência e inovação)
+   - Ciano:        #16C5E4 (Tecnologia, conectividade e modernidade)
+   - Cinza claro:  #F2F4FA (Simplicidade e clareza)
+   ========================================================================== */
 
 :root {
-  /* Marca TOTVS */
-  --brand-950: #071427; /* Fundo do menu lateral e da barra superior */
-  --brand-900: #0B2447; /* Títulos, textos de destaque em fundo claro */
-  --brand-700: #19376D; /* Hover de itens do menu, bordas ativas */
-  --brand-500: #1E6BFF; /* Cor de ação: botão primário, links, foco */
-  --brand-300: #8FB8FF; /* Estados secundários, gráficos de apoio */
-  --brand-100: #E6F0FF; /* Fundos de destaque suaves, linha selecionada */
-  --accent-cyan: #12B5E5; /* Detalhes e realces pontuais */
+  /* ── 1. Paleta Primitiva do Projeto ── */
+  --palette-navy: #09132F;
+  --palette-purple: #7139DC;
+  --palette-purple-hover: #5D2BBF;
+  --palette-purple-glow: #8A52FA;
+  --palette-cyan: #16C5E4;
+  --palette-cyan-hover: #0EA5BF;
+  --palette-light-gray: #F2F4FA;
 
-  /* Neutros e superfícies */
-  --bg-app: #F5F7FB; /* Fundo geral da aplicação */
-  --bg-surface: #FFFFFF; /* Cards, tabelas, formulários */
-  --border: #D9DFEA; /* Bordas e divisores */
-  --text-primary: #111827; /* Texto principal */
-  --text-secondary: #4B5563; /* Texto de apoio */
-  --text-on-brand: #FFFFFF; /* Texto sobre fundos da marca */
-  --focus-ring: #1E6BFF; /* Contorno de foco visível */
+  /* ── 2. Tokens Semânticos - MODO CLARO (Light Mode) ── */
+  --bg-primary: #F2F4FA;          /* Cinza claro oficial predominante */
+  --bg-surface: #FFFFFF;          /* Branco puro para cards, containers e superfícies */
+  --bg-elevated: #FFFFFF;         /* Modais, dropdowns e popovers */
+  --bg-surface-elevated: #FFFFFF;
+  --bg-subtle: #F1F4F9;           /* Hover e seleções secundárias */
 
-  /* Semânticos (cada um com fundo suave e texto escuro para contraste AA) */
-  --risk-high: #A31515; /* Risco alto, erro, atrasado */
-  --risk-high-bg: #FDECEA;
-  --risk-moderate: #7A4A00; /* Risco moderado, atenção */
-  --risk-moderate-bg: #FFF4E0;
-  --risk-low: #1B5E20; /* Risco baixo, sucesso, em dia */
-  --risk-low-bg: #E8F5E9;
-  --info: #0D47A1; /* Informação, pendente */
-  --info-bg: #E3F2FD;
+  /* Menus e Navegação - Modo Claro: Azul-marinho oficial (#09132F) */
+  --bg-nav: #09132F;              /* Sidebar e TopNavbar no claro: Azul-marinho oficial */
+  --bg-nav-surface: #0D1B3E;      /* Superfície interna em menus (banner de perfil) */
+  --bg-nav-hover: rgba(255,255,255,0.08);  /* Hover de itens: sutil sobre azul-marinho */
+  --bg-nav-active: rgba(113, 57, 220, 0.25); /* Item ativo: roxo translúcido */
+  --border-nav: rgba(255,255,255,0.10);    /* Divisores e bordas dos menus */
+  --text-nav: #FFFFFF;            /* Texto principal em menus */
+  --text-nav-muted: #94A3B8;      /* Texto secundário em menus */
 
-  /* Mapeamento de compatibilidade com tokens legados */
-  --color-totvs-navy: var(--brand-950);
-  --color-totvs-navy-light: var(--brand-700);
-  --color-totvs-primary: var(--brand-500);
-  --color-totvs-accent: var(--accent-cyan);
-  --color-totvs-surface: var(--bg-app);
-  --color-totvs-border: var(--border);
-  --color-risk-high: var(--risk-high);
-  --color-risk-high-bg: var(--risk-high-bg);
-  --color-risk-moderate: var(--risk-moderate);
-  --color-risk-moderate-bg: var(--risk-moderate-bg);
-  --color-risk-low: var(--risk-low);
-  --color-risk-low-bg: var(--risk-low-bg);
+  --text-primary: #09132F;        /* Azul-marinho oficial - Contraste WCAG AAA (15.6:1) */
+  --text-secondary: #525866;      /* Texto de apoio neutro legível (Contraste > 5.5:1) */
+  --text-muted: #828B9E;          /* Texto desativado ou metadados sutis */
+  --text-on-accent: #FFFFFF;      /* Texto sobre roxo / ciano */
+  --text-on-brand: #09132F;       /* Texto sobre cabeçalhos da marca */
+
+  --accent-primary: #7139DC;      /* Roxo oficial: CTAs, botões primários e foco principal */
+  --accent-primary-hover: #5D2BBF;
+  --accent-primary-subtle: rgba(113, 57, 220, 0.08);
+
+  --accent-secondary: #16C5E4;    /* Ciano oficial: Badges, ícones e realces de micro-interação */
+  --accent-secondary-hover: #0EA5BF;
+  --accent-secondary-subtle: rgba(22, 197, 228, 0.12);
+
+  --border-subtle: #E2E8F0;       /* Divisores e bordas leves */
+  --border-strong: #CBD5E1;       /* Bordas de controle e foco */
+  --focus-ring: #7139DC;          /* Foco acessível em roxo */
+
+  /* Semânticos de Status (Alinhados com a vibração tecnológica) */
+  --status-success: #10B981;
+  --status-success-bg: #ECFDF5;
+  --status-warning: #D97706;
+  --status-warning-bg: #FFFBEB;
+  --status-danger: #EF4444;
+  --status-danger-bg: #FEF2F2;
+  --status-info: #0284C7;
+  --status-info-bg: #E0F2FE;
+
+  /* ── 3. Mapeamentos de Compatibilidade com o Design System Anterior ── */
+  --bg-app: var(--bg-primary);
+  --border: var(--border-subtle);
+  --brand-950: #09132F;
+  --brand-900: #09132F;
+  --brand-700: #1B294E;
+  --brand-500: var(--accent-primary);
+  --brand-300: var(--accent-secondary);
+  --brand-100: var(--accent-primary-subtle);
+  --accent-cyan: var(--accent-secondary);
+
+  --risk-high: var(--status-danger);
+  --risk-high-bg: var(--status-danger-bg);
+  --risk-moderate: var(--status-warning);
+  --risk-moderate-bg: var(--status-warning-bg);
+  --risk-low: var(--status-success);
+  --risk-low-bg: var(--status-success-bg);
+  --info: var(--status-info);
+  --info-bg: var(--status-info-bg);
 
   /* Tipografia */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ── 4. Variáveis de Layout (PARTE5F) ── */
+  --sidebar-width: 18rem;        /* 288 px – menu expandido */
+  --sidebar-rail: 4.5rem;        /* 72 px  – menu recolhido (tablet) */
+  --topbar-height: 4rem;         /* 64 px  – altura fixa da barra superior */
+  --content-max: 80rem;          /* 1280 px – largura máxima centralizada */
+  --page-gutter: 1rem;           /* Margem lateral responsiva */
+  --vlibras-gutter: 3.5rem;      /* Folga lateral com VLibras ativo */
+
+  /* Camadas (z-index) */
+  --z-sticky: 20;
+  --z-topbar: 20;
+  --z-sidebar: 30;
+  --z-vlibras: 35;
+  --z-dropdown: 50;
+  --z-drawer: 60;
+  --z-modal: 70;
+  --z-dialog: 70;
+  --z-toast: 80;
+  --z-tooltip: 90;
+}
+
+/* ==========================================================================
+   TOKENS SEMÂNTICOS - MODO ESCURO (Dark Mode Estilo Sistema / Android / Material 3)
+   - Fundo principal: #131314 (preto fosco padrão de sistema)
+   - Superfícies/Cards: #1E1F20 (hierarquia visual limpa e alto conforto visual)
+   - Superfícies elevadas/Modais/Inputs: #28292A
+   - Bordas sutis: #333537
+   - Texto principal: #F2F4FA (Cinza claro oficial)
+   - Texto secundário: #A0A4AB (Neutro de alta legibilidade)
+   ========================================================================== */
+.dark,
+html.dark,
+[data-theme='dark'] {
+  --bg-primary: #131314;          /* Preto fosco padrão de sistema (alto conforto OLED) */
+  --bg-surface: #1E1F20;          /* Superfície elevada / Cards / Containers */
+  --bg-elevated: #28292A;         /* Modais, menus flutuantes, inputs, hovers */
+  --bg-surface-elevated: #28292A;
+  --bg-subtle: #2C2D2E;           /* Hover de itens e botões neutros */
+
+  /* Menus e Navegação (Dark Sistema) */
+  --bg-nav: #1E1F20;              /* Fundo de menus de navegação (Sidebar e TopNavbar) */
+  --bg-nav-surface: #28292A;      /* Superfície interna em menus */
+  --bg-nav-hover: #28292A;        /* Hover de itens no menu */
+  --bg-nav-active: #2C2D2E;       /* Item ativo no menu */
+  --border-nav: #333537;          /* Borda divisória dos menus */
+  --text-nav: #F2F4FA;            /* Texto principal em menus */
+  --text-nav-muted: #A0A4AB;      /* Texto secundário em menus */
+
+  --text-primary: #F2F4FA;        /* Cinza claro oficial - Contraste WCAG AAA (15.1:1) */
+  --text-secondary: #A0A4AB;      /* Neutro secundário de alta legibilidade (Contraste > 6.2:1) */
+  --text-muted: #6E737D;          /* Metadados e textos terciários */
+  --text-on-accent: #FFFFFF;
+  --text-on-brand: #F2F4FA;
+
+  --accent-primary: #8A52FA;      /* Roxo vibrante de alta visibilidade e contraste escuro */
+  --accent-primary-hover: #9D6DFB;
+  --accent-primary-subtle: rgba(138, 82, 250, 0.16);
+
+  --accent-secondary: #16C5E4;    /* Ciano oficial: Brilho nítido e tecnológico sobre o fundo escuro */
+  --accent-secondary-hover: #38D4EE;
+  --accent-secondary-subtle: rgba(22, 197, 228, 0.18);
+
+  --border-subtle: #333537;       /* Divisores sutis estilo sistema */
+  --border-strong: #44474A;       /* Bordas de controle ativas */
+  --focus-ring: #16C5E4;          /* Foco no escuro realçado pelo Ciano */
+
+  /* Detalhe de Profundidade Estrutural Azul-marinho oficial (#09132F) */
+  --navy-accent-surface: #09132F; /* Uso estratégico em badges ou detalhes estruturais */
+
+  /* Semânticos de Status no Modo Escuro */
+  --status-success: #34D399;
+  --status-success-bg: rgba(16, 185, 129, 0.16);
+  --status-warning: #FBBF24;
+  --status-warning-bg: rgba(245, 158, 11, 0.16);
+  --status-danger: #F87171;
+  --status-danger-bg: rgba(239, 68, 68, 0.16);
+  --status-info: #38BDF8;
+  --status-info-bg: rgba(22, 197, 228, 0.16);
+
+  /* Mapeamento de Compatibilidade */
+  --bg-app: var(--bg-primary);
+  --border: var(--border-subtle);
+  --brand-950: var(--bg-nav);
+  --brand-900: #E4E7ED;
+  --brand-700: var(--bg-elevated);
+  --brand-500: var(--accent-primary);
+  --brand-300: var(--accent-secondary);
+  --brand-100: var(--accent-primary-subtle);
+  --accent-cyan: var(--accent-secondary);
+
+  --risk-high: var(--status-danger);
+  --risk-high-bg: var(--status-danger-bg);
+  --risk-moderate: var(--status-warning);
+  --risk-moderate-bg: var(--status-warning-bg);
+  --risk-low: var(--status-success);
+  --risk-low-bg: var(--status-success-bg);
+  --info: var(--status-info);
+  --info-bg: var(--status-info-bg);
 }

@@ -130,7 +130,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
               Falhou
             </Badge>
             {document.indexError && (
-              <div className="absolute z-10 bottom-full left-0 mb-1 hidden group-hover:block w-48 p-2 bg-slate-900 text-white text-[10px] rounded shadow-lg">
+              <div className="absolute z-[var(--z-tooltip)] bottom-full left-0 mb-1 hidden group-hover:block w-48 p-2 bg-slate-900 text-white text-[10px] rounded shadow-lg">
                 {document.indexError}
               </div>
             )}

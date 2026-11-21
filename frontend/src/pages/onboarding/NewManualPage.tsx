@@ -5,7 +5,7 @@ import { CaseForm } from '../../features/onboarding/components/CaseForm';
 
 export const NewManualPage: React.FC = () => {
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
       <PageHeader
         title="Novo Cadastro Manual"
         subtitle="Preencha os dados do candidato diretamente. As regras são validadas em tempo real pelo backend sem persistência até o salvamento do rascunho."

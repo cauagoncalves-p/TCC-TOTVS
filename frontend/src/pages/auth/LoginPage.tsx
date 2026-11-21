@@ -50,17 +50,17 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-950 flex flex-col justify-center items-center p-4 relative">
+    <div className="min-h-screen bg-bg-nav flex flex-col justify-center items-center p-4 relative">
       {/* Botão de Acessibilidade no Login */}
       <div className="absolute top-4 right-4">
         <button
           type="button"
           onClick={() => setIsA11yOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-900/80 hover:bg-brand-700 text-slate-300 hover:text-white border border-brand-700 text-xs font-medium transition-colors shadow-xs"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-nav-surface hover:bg-bg-nav-hover text-text-nav-muted hover:text-text-nav border border-nav text-xs font-medium transition-colors shadow-xs"
           title="Opções de Acessibilidade (VLibras)"
           aria-label="Abrir painel de acessibilidade"
         >
-          <Accessibility className="w-4 h-4 text-accent-cyan" />
+          <Accessibility className="w-4 h-4 text-accent-secondary" />
           <span>Acessibilidade</span>
         </button>
       </div>
@@ -68,17 +68,17 @@ export const LoginPage: React.FC = () => {
       <div className="w-full max-w-md">
         {/* Header Branding */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/20 mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-accent-primary to-purple-500 text-white shadow-lg shadow-accent-primary/30 mb-3">
             <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">TOTVS RH Inteligente</h1>
-          <p className="text-xs text-slate-300 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-nav">TOTVS RH Inteligente</h1>
+          <p className="text-xs text-text-nav-muted mt-1">
             Plataforma de Gestão, Inteligência Preditiva e Compliance com IA
           </p>
         </div>
 
         {/* Card de Login */}
-        <Card className="p-4 sm:p-7 bg-app-surface shadow-2xl border border-app-border">
+        <Card className="p-4 sm:p-7 bg-bg-elevated shadow-2xl border border-border-subtle">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Input
@@ -113,7 +113,7 @@ export const LoginPage: React.FC = () => {
             <Button
               type="submit"
               variant="primary"
-              className="w-full py-2.5 shadow-md shadow-brand-500/20"
+              className="w-full py-2.5 shadow-md shadow-accent-primary/20"
               isLoading={isLoading}
             >
               <span>Acessar Plataforma</span>
@@ -122,7 +122,7 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Atalhos para a Demonstração (Demo) */}
-          <div className="mt-6 pt-5 border-t border-app-border">
+          <div className="mt-6 pt-5 border-t border-border-subtle">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block text-center mb-2.5">
               Acesso Rápido para Demonstração (Demo)
             </span>
@@ -130,7 +130,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('ana.souza@exemplo.com')}
-                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-border-subtle hover:border-accent-primary hover:bg-accent-primary/5 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Ana Souza</span>
                 <span className="block text-[9px] text-text-secondary font-medium">Colaborador</span>
@@ -139,16 +139,16 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('roberta.rh@exemplo.com')}
-                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-border-subtle hover:border-accent-primary hover:bg-accent-primary/5 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Roberta RH</span>
-                <span className="block text-[9px] text-brand-500 font-semibold">Perfil RH</span>
+                <span className="block text-[9px] text-accent-primary font-semibold">Perfil RH</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleQuickLogin('carlos.gestor@exemplo.com')}
-                className="p-2.5 sm:p-2 text-center rounded-lg border border-app-border hover:border-brand-500 hover:bg-brand-100/50 transition-colors text-left min-h-[44px] flex flex-col justify-center"
+                className="p-2.5 sm:p-2 text-center rounded-lg border border-border-subtle hover:border-accent-primary hover:bg-accent-primary/5 transition-colors text-left min-h-[44px] flex flex-col justify-center"
               >
                 <span className="block text-[11px] font-bold text-text-primary">Carlos</span>
                 <span className="block text-[9px] text-risk-moderate font-semibold">Perfil Gestor</span>
@@ -161,8 +161,8 @@ export const LoginPage: React.FC = () => {
         </Card>
 
         {/* Rodapé institucional */}
-        <p className="text-center text-xs text-slate-400 mt-6 flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-brand-500" />
+        <p className="text-center text-xs text-text-muted mt-6 flex items-center justify-center gap-1.5">
+          <ShieldCheck className="w-4 h-4 text-accent-primary" />
           <span>Acesso corporativo seguro • TOTVS RH Inteligente</span>
         </p>
       </div>

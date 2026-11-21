@@ -1,12 +1,23 @@
 // Gerenciamento de notificações do TOTVS Compliance Inteligente (Fase F4b)
 
+export type NotificationType =
+  | 'alerta'
+  | 'obrigacao'
+  | 'auditoria'
+  | 'chamado_respondido'
+  | 'chamado_resolvido'
+  | 'chamado_novo'
+  | 'chamado_mensagem';
+
 export interface NotificationItem {
   id: string;
   title: string;
   message: string;
   date: string;
-  type: 'alerta' | 'obrigacao' | 'auditoria';
+  type: NotificationType;
   isRead: boolean;
+  refType?: 'chamado' | string;
+  refId?: string | number;
 }
 
 const STORAGE_KEY = 'totvs_compliance_notifications';

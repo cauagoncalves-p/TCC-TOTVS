@@ -87,14 +87,14 @@ export const ChunksDrawer: React.FC<ChunksDrawerProps> = ({
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/40 z-40 transition-opacity"
+        className="fixed inset-0 bg-black/40 z-[var(--z-drawer)] transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Drawer */}
       <div
-        className="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-50 flex flex-col"
+        className="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-[var(--z-drawer)] flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label="Trechos indexados"

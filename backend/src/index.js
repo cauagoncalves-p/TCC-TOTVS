@@ -27,6 +27,8 @@ const alertRoutes = require('./routes/alerts');
 const complianceRoutes = require('./routes/compliance');
 const adminUserRoutes = require('./routes/adminUsers');
 const knowledgeRoutes = require('./routes/knowledge');
+const ticketRoutes = require('./routes/tickets');
+const retentionRoutes = require('./routes/retention');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', meRoutes);
@@ -37,6 +39,8 @@ app.use('/api/alerts', alertRoutes);
 app.use('/api/compliance', complianceRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/knowledge', knowledgeRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/retention', retentionRoutes);
 
 // Tratamento de rotas inexistentes (404)
 app.use((req, res) => {
@@ -45,20 +49,27 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Backend server rodando na porta ${PORT}`);
-    console.log(`Rotas ativas:`);
-    console.log(`- POST http://localhost:${PORT}/api/auth/login`);
-    console.log(`- GET  http://localhost:${PORT}/api/me`);
-    console.log(`- POST http://localhost:${PORT}/api/chat`);
-    console.log(`- GET  http://localhost:${PORT}/api/chat/sessions/:id/messages`);
-    console.log(`- POST http://localhost:${PORT}/api/onboarding/upload`);
-    console.log(`- GET  http://localhost:${PORT}/api/onboarding`);
-    console.log(`- POST http://localhost:${PORT}/api/onboarding`);
-    console.log(`- POST http://localhost:${PORT}/api/onboarding/validate`);
-    console.log(`- GET  http://localhost:${PORT}/api/health`);
-  });
-}
+const server = app.listen(PORT, () => {
+  console.log(`Backend server rodando na porta ${PORT}`);
+  console.log(`Rotas ativas:`);
+  console.log(`- POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`- GET  http://localhost:${PORT}/api/me`);
+  console.log(`- POST http://localhost:${PORT}/api/chat`);
+  console.log(`- GET  http://localhost:${PORT}/api/chat/sessions/:id/messages`);
+  console.log(`- POST http://localhost:${PORT}/api/onboarding/upload`);
+  console.log(`- GET  http://localhost:${PORT}/api/onboarding`);
+  console.log(`- POST http://localhost:${PORT}/api/onboarding`);
+  console.log(`- POST http://localhost:${PORT}/api/onboarding/validate`);
+  console.log(`- GET  http://localhost:${PORT}/api/health`);
+  console.log(`- GET  http://localhost:${PORT}/api/retention/employees`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Porta ${PORT} já está em uso, reutilizando servidor existente.`);
+  } else {
+    console.error('Erro no servidor Express:', err);
+  }
+});
 
 module.exports = app;

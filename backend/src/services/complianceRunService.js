@@ -173,7 +173,9 @@ async function executeRun({ scope, eventCode, userId }) {
 
     // 4. Afastamentos
     const leaveRes = await pool.request().query(`
-      SELECT Id, EmployeeId, LeaveType, StartDate, EndDate
+      SELECT Id, EmployeeId, LeaveType,
+             CONVERT(VARCHAR(10), StartDate, 120) AS StartDate,
+             CONVERT(VARCHAR(10), EndDate, 120) AS EndDate
       FROM dbo.Leaves
     `);
     const leaves = leaveRes.recordset;
@@ -238,26 +240,45 @@ async function executeRun({ scope, eventCode, userId }) {
       if (ev.EventCode === 'S-2200') {
         const empQuery = await pool.request()
           .input('empId', ev.EmployeeId)
-          .query('SELECT * FROM dbo.Employees WHERE Id = @empId');
+          .query(`
+            SELECT Id, UserId, FullName, Registration, JobTitle, Department,
+                   CONVERT(VARCHAR(10), HireDate, 120) AS HireDate,
+                   CONVERT(VARCHAR(10), TerminationDate, 120) AS TerminationDate,
+                   Cpf, CONVERT(VARCHAR(10), BirthDate, 120) AS BirthDate,
+                   BaseSalary, WeeklyHours, ContractType, Status
+            FROM dbo.Employees WHERE Id = @empId
+          `);
         const emp = empQuery.recordset[0];
         if (emp) cand = rulesService.validateEsocialS2200(emp);
       } else if (ev.EventCode === 'S-2230') {
         let leave = null;
         if (ev.LeaveId) {
-          const lq = await pool.request().input('lId', ev.LeaveId).query('SELECT * FROM dbo.Leaves WHERE Id = @lId');
+          const lq = await pool.request().input('lId', ev.LeaveId).query(`
+            SELECT Id, EmployeeId, LeaveType,
+                   CONVERT(VARCHAR(10), StartDate, 120) AS StartDate,
+                   CONVERT(VARCHAR(10), EndDate, 120) AS EndDate
+            FROM dbo.Leaves WHERE Id = @lId
+          `);
           leave = lq.recordset[0];
         }
         cand = rulesService.validateEsocialS2230(leave || { EmployeeId: ev.EmployeeId });
       } else if (ev.EventCode === 'S-2299') {
         const empQuery = await pool.request()
           .input('empId', ev.EmployeeId)
-          .query('SELECT * FROM dbo.Employees WHERE Id = @empId');
+          .query(`
+            SELECT Id, UserId, FullName, Registration, JobTitle, Department,
+                   CONVERT(VARCHAR(10), HireDate, 120) AS HireDate,
+                   CONVERT(VARCHAR(10), TerminationDate, 120) AS TerminationDate,
+                   Cpf, CONVERT(VARCHAR(10), BirthDate, 120) AS BirthDate,
+                   BaseSalary, WeeklyHours, ContractType, Status
+            FROM dbo.Employees WHERE Id = @empId
+          `);
         const emp = empQuery.recordset[0];
         if (emp) cand = rulesService.validateEsocialS2299(emp);
       }
 
       if (cand) {
-        const rule = ruleMap.get(cand.ruleCode);
+        const rule = ruleMap.get(cand.ruleCode) || ruleMap.get(cand.ruleCode + '_CHECKLIST');
         if (rule) {
           const res = await complianceIssueRepository.upsertIssue({
             ruleId: rule.Id,

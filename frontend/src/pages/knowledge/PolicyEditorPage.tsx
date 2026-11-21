@@ -186,7 +186,7 @@ export const PolicyEditorPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5 max-w-5xl mx-auto pb-12">
+    <div className="space-y-5 max-w-5xl pb-12">
       {/* Voltar e Cabeçalho */}
       <div className="flex items-center justify-between">
         <Link

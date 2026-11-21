@@ -587,7 +587,7 @@ export const OnboardingReviewForm: React.FC<OnboardingReviewFormProps> = ({
 
       {/* Modal de Rejeição com Motivo Obrigatório */}
       {isRejectModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-150">
           <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-6 space-y-4">
             <div className="flex items-start gap-3">
               <div className="p-2.5 rounded-full bg-rose-50 text-rose-600 shrink-0">
@@ -645,7 +645,7 @@ export const OnboardingReviewForm: React.FC<OnboardingReviewFormProps> = ({
 
       {/* Modal de Sucesso com Senha Temporária */}
       {approvalResult && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">

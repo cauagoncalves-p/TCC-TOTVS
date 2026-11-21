@@ -27,7 +27,10 @@ export const ChatPage: React.FC = () => {
   } = useChat();
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-5.5rem)] sm:h-[calc(100vh-6.5rem)] max-w-5xl mx-auto min-h-0">
+    <div
+      className="flex flex-col max-w-5xl mx-auto min-h-0"
+      style={{ height: 'calc(100dvh - var(--topbar-height) - 2 * var(--page-gutter))' }}
+    >
       {/* Header com Ações visível a partir de sm */}
       <div className="hidden sm:block">
         <PageHeader

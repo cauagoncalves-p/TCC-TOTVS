@@ -43,9 +43,24 @@ Os scripts devem ser executados em ordem sequencial no banco de dados SQL Server
 
 ---
 
-## 3. Seeds e Carga Inicial de Dados
+## 3. Massa de Dados e Seed Mestre (Parte 8B)
 
-Com o banco de dados configurado e os scripts aplicados, execute os seeds a partir da pasta `backend`:
+A carga oficial e coerente de dados do sistema é fornecida via scripts SQL versionados na pasta `database/`:
+
+1. **`database/S00_reset.sql`**: Limpeza segura e reversível exclusiva dos dados marcados pelo seed.
+2. **`database/S01_pessoas.sql`**: 150 colaboradores (`S0001` a `S0150`), usuários do seed, holerites, saldos de férias e afastamentos.
+3. **`database/S02_inteligencia.sql`**: 24 meses de métricas departamentais e cenários plantados (`SeedExpectedAlerts`).
+4. **`database/S03_compliance.sql`**: Regras de conformidade, defeitos plantados e eventos eSocial (`SeedExpectedDefects`).
+5. **`database/S04_obrigacoes_notificacoes.sql`**: Obrigações de folha/eSocial e notificações com datas relativas à execução.
+6. **`database/S05_onboarding.sql`**: Casos de admissão aprovados, pendentes e rejeitados.
+7. **`database/S06_conhecimento.sql`**: Políticas internas indexadas na base de conhecimento.
+
+> **Importante (Scripts Obsoletos):**
+> Os scripts `backend/scripts/seedAnalytics.js` e `backend/scripts/seedCompliance.js` tornaram-se **OBSOLETOS** e **NÃO** devem ser executados, para evitar sobrescrever a massa coerente do seed mestre SQL.
+
+### Scripts de Inspeção e Verificação (Somente Leitura)
+
+A partir da pasta `backend`:
 
 ```bash
 cd backend
@@ -53,14 +68,11 @@ cd backend
 # 1. Definir/atualizar senhas de demonstração com hash bcrypt (senha: 123456)
 node scripts/setPasswords.js
 
-# 2. Popular histórico analítico de 24 meses e departamentos (Inteligência Preditiva)
-node scripts/seedAnalytics.js
+# 2. Inspeção somente leitura da integridade do seed (Passo 1 da Parte 8B)
+node scripts/inspect.js
 
-# 3. Popular regras trabalhistas, defeitos plantados para auditoria e eventos eSocial
-node scripts/seedCompliance.js
-
-# 4. (Opcional) Gerar PDF de exemplo para teste da Base de Conhecimento
-node scripts/generateAprendizPdf.js
+# 3. Execução dos motores de compliance/alertas e comparação com gabaritos (Passos 3 e 4)
+node scripts/verify.js
 ```
 
 ---

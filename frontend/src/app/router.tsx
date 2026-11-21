@@ -21,6 +21,12 @@ import { PolicyEditorPage } from '../pages/knowledge/PolicyEditorPage';
 import { LaborAssistantPage } from '../pages/assistant/LaborAssistantPage';
 import { UsersPage } from '../pages/admin/UsersPage';
 import { ForceChangePasswordPage } from '../pages/auth/ForceChangePasswordPage';
+import { MyTicketsPage } from '../pages/tickets/MyTicketsPage';
+import { NewTicketPage } from '../pages/tickets/NewTicketPage';
+import { MyTicketDetailPage } from '../pages/tickets/MyTicketDetailPage';
+import { RhTicketsPage } from '../pages/tickets/RhTicketsPage';
+import { RhTicketDetailPage } from '../pages/tickets/RhTicketDetailPage';
+import { MethodologyPage } from '../features/retention/pages/MethodologyPage';
 
 export const router = createBrowserRouter([
   {
@@ -61,10 +67,52 @@ export const router = createBrowserRouter([
         )
       },
       {
+        path: 'chamados',
+        element: (
+          <RequireRole allowedRoles={['colaborador']}>
+            <MyTicketsPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'chamados/novo',
+        element: (
+          <RequireRole allowedRoles={['colaborador']}>
+            <NewTicketPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'chamados/:id',
+        element: (
+          <RequireRole allowedRoles={['colaborador']}>
+            <MyTicketDetailPage />
+          </RequireRole>
+        )
+      },
+      {
         path: 'me',
         element: (
           <RequireRole allowedRoles={['colaborador']}>
             <ProfilePage />
+          </RequireRole>
+        )
+      },
+
+      // Rotas de Chamados (RH)
+      {
+        path: 'rh/chamados',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <RhTicketsPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'rh/chamados/:id',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <RhTicketDetailPage />
           </RequireRole>
         )
       },
@@ -111,6 +159,30 @@ export const router = createBrowserRouter([
             <AnalyticsPage />
           </RequireRole>
         )
+      },
+      {
+        path: 'inteligencia/colaboradores',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <AnalyticsPage initialTab="colaboradores" />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'inteligencia/colaboradores/como-calculamos',
+        element: (
+          <RequireRole allowedRoles={['rh']}>
+            <MethodologyPage />
+          </RequireRole>
+        )
+      },
+      {
+        path: 'inteligencia',
+        element: <Navigate to="/analytics" replace />
+      },
+      {
+        path: 'analytics/colaboradores',
+        element: <Navigate to="/inteligencia/colaboradores" replace />
       },
 
       // Rotas de Compliance (RH e Gestor)

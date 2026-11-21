@@ -8,7 +8,8 @@ import {
   ShieldCheck,
   BookOpen,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  LifeBuoy
 } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { Card } from '../../components/ui/Card';
@@ -44,7 +45,8 @@ export const DashboardPage: React.FC = () => {
           Módulos Habilitados para seu Perfil
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* grade responsiva: 1 col celular / 2 tablet / 3 desktop */}
+        <div className="cards-grid">
           {role === 'colaborador' && (
             <>
               <Card className="p-5 flex flex-col justify-between hover:border-blue-300 transition-all">
@@ -75,6 +77,22 @@ export const DashboardPage: React.FC = () => {
                 </div>
                 <Button variant="outline" size="sm" onClick={() => navigate('/me')} className="w-full justify-between">
                   <span>Ver Meu Perfil</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Card>
+
+              <Card className="p-5 flex flex-col justify-between hover:border-blue-300 transition-all">
+                <div>
+                  <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 w-fit mb-3">
+                    <LifeBuoy className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900 mb-1">Chamados com o RH</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                    Abra solicitações de suporte e tire dúvidas diretamente com a equipe de Recursos Humanos.
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => navigate('/chamados')} className="w-full justify-between">
+                  <span>Ver Meus Chamados</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Card>

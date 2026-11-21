@@ -17,7 +17,7 @@ export const CaseDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="space-y-6">
         <div className="flex items-center gap-3 pb-4 border-b border-slate-200">
           <Skeleton className="w-24 h-8" />
           <Skeleton className="w-40 h-8" />
@@ -38,7 +38,7 @@ export const CaseDetailPage: React.FC = () => {
 
   if (isError || !caseData) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="space-y-6">
         <div className="pb-4 border-b border-slate-200">
           <Button
             type="button"
@@ -61,7 +61,7 @@ export const CaseDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full">
       <CaseForm
         initialCase={caseData}
         isNewManual={false}
